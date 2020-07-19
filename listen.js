@@ -1,9 +1,10 @@
 const zlib = require('zlib')
 const zmq = require('zeromq')
 const sock = zmq.socket('sub')
+const request = require('request-promise')
 const Alert = require('./schema/Alert')
 
-const sendAlert = ({
+const sendAlert = async ({
   alertValue,
   commodityName,
   type,
@@ -11,14 +12,36 @@ const sendAlert = ({
   value,
   station,
   system,
+  webhookUrl,
 }) => {
-  console.log(
-    `${new Date().toISOString()}: ${commodityName} ${
-      type === 'buy' ? 'buys' : 'sells'
-    } for ${
-      trigger === 'above' ? 'more' : 'less'
-    } than ${alertValue} at ${station} in the ${system} system. Current value is ${value}.`
-  )
+  const content = `${new Date().toISOString()}: ${commodityName} ${
+    type === 'buy' ? 'buys' : 'sells'
+  } for ${
+    trigger === 'above' ? 'more' : 'less'
+  } than ${alertValue} at ${station} in the ${system} system. Current value is ${value}.`
+
+  await request({
+    uri: webhookUrl,
+    method: 'post',
+    json: {
+      embeds: [
+        {
+          title: 'Alert triggered',
+          description: `${content}\n\nDelete this alert https://example.com`,
+          color: 7506394,
+          author: {
+            name: 'ED Alerts',
+            url: 'https://example.com',
+          },
+          footer: {
+            text: 'ED Alerts',
+          },
+          timestamp: new Date().toISOString(),
+        },
+      ],
+      username: 'ED Alerts',
+    },
+  })
 }
 
 sock.connect('tcp://eddn.edcd.io:9500')
@@ -46,6 +69,7 @@ sock.on('message', (message) => {
                 value: commodity.buyPrice,
                 station: inflated.message.stationName,
                 system: inflated.message.systemName,
+                webhookUrl: alert.webhook,
               })
             }
           } else if (alert.trigger === 'below') {
@@ -58,6 +82,7 @@ sock.on('message', (message) => {
                 value: commodity.buyPrice,
                 station: inflated.message.stationName,
                 system: inflated.message.systemName,
+                webhookUrl: alert.webhook,
               })
             }
           }
@@ -72,6 +97,7 @@ sock.on('message', (message) => {
                 value: commodity.sellPrice,
                 station: inflated.message.stationName,
                 system: inflated.message.systemName,
+                webhookUrl: alert.webhook,
               })
             }
           } else if (alert.trigger === 'below') {
@@ -84,6 +110,7 @@ sock.on('message', (message) => {
                 value: commodity.sellPrice,
                 station: inflated.message.stationName,
                 system: inflated.message.systemName,
+                webhookUrl: alert.webhook,
               })
             }
           }
