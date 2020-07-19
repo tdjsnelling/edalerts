@@ -1,0 +1,9 @@
+const express = require('express')
+const router = express.Router()
+const alerts = require('../controllers/alerts')
+
+router.route('/alert').post(alerts.create)
+router.route('/alert/:id').get(alerts.get)
+router.route('/alert/:id').delete(alerts.delete)
+
+module.exports = router
