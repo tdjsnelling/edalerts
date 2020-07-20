@@ -14,9 +14,10 @@ const sendAlert = async ({
   system,
   webhookUrl,
 }) => {
-  const content = `${new Date().toISOString()}: ${commodityName} ${
-    type === 'buy' ? 'buys' : 'sells'
-  } for ${
+  const title = `Alert triggered: ${commodityName} ${type} ${
+    trigger === 'above' ? '>' : '<'
+  } ${alertValue}`
+  const content = `${commodityName} ${type === 'buy' ? 'buys' : 'sells'} for ${
     trigger === 'above' ? 'more' : 'less'
   } than ${alertValue} at ${station} in the ${system} system. Current value is ${value}.`
 
@@ -26,13 +27,29 @@ const sendAlert = async ({
     json: {
       embeds: [
         {
-          title: 'Alert triggered',
-          description: `${content}\n\nDelete this alert https://example.com`,
+          title: title,
           color: 7506394,
           author: {
             name: 'ED Alerts',
             url: 'https://example.com',
           },
+          fields: [
+            {
+              name: 'Value',
+              value: value,
+              inline: false,
+            },
+            {
+              name: 'Location',
+              value: `${station}, ${system}`,
+              inline: false,
+            },
+            {
+              name: 'Delete this alert',
+              value: 'http://example.com',
+              inline: false,
+            },
+          ],
           footer: {
             text: 'ED Alerts',
           },
