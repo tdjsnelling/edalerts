@@ -2,12 +2,14 @@
   "extends": [
     "eslint:recommended",
     "plugin:prettier/recommended",
+    "plugin:react/recommended"
   ],
 
   "rules": {
     "object-curly-spacing": ["error", "always"]
   },
   "env": {
+    "browser": true,
     "es6": true,
     "node": true
   },

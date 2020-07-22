@@ -1,0 +1,26 @@
+{
+  "name": "edalerts",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start"
+  },
+  "dependencies": {
+    "@styled-system/css": "^5.1.5",
+    "@svgr/webpack": "^5.4.0",
+    "email-validator": "^2.0.4",
+    "next": "9.4.4",
+    "react": "16.13.1",
+    "react-dom": "16.13.1",
+    "rebass": "^4.0.7",
+    "request": "^2.88.2",
+    "request-promise": "^4.2.5",
+    "styled-components": "^5.1.1",
+    "styled-system": "^5.1.5"
+  },
+  "devDependencies": {
+    "babel-plugin-styled-components": "^1.10.7"
+  }
+}
