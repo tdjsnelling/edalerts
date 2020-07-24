@@ -5,6 +5,7 @@ const request = require('request-promise')
 const Alert = require('./schema/Alert')
 
 const sendAlert = async ({
+  alertId,
   alertValue,
   commodityName,
   type,
@@ -17,9 +18,6 @@ const sendAlert = async ({
   const title = `Alert triggered: ${commodityName} ${type} ${
     trigger === 'above' ? '>' : '<'
   } ${alertValue}`
-  const content = `${commodityName} ${type === 'buy' ? 'buys' : 'sells'} for ${
-    trigger === 'above' ? 'more' : 'less'
-  } than ${alertValue} at ${station} in the ${system} system. Current value is ${value}.`
 
   await request({
     uri: webhookUrl,
@@ -31,7 +29,7 @@ const sendAlert = async ({
           color: 7506394,
           author: {
             name: 'ED Alerts',
-            url: 'https://example.com',
+            url: 'https://edalerts.app',
           },
           fields: [
             {
@@ -46,7 +44,7 @@ const sendAlert = async ({
             },
             {
               name: 'Delete this alert',
-              value: 'http://example.com',
+              value: `https://edalerts.app/delete/${alertId}`,
               inline: false,
             },
           ],
@@ -79,6 +77,7 @@ sock.on('message', (message) => {
           if (alert.trigger === 'above') {
             if (commodity.buyPrice > alert.value) {
               sendAlert({
+                alertId: alert._id,
                 alertValue: alert.value,
                 commodityName: commodity.name,
                 type: 'buy',
@@ -92,6 +91,7 @@ sock.on('message', (message) => {
           } else if (alert.trigger === 'below') {
             if (commodity.buyPrice < alert.value) {
               sendAlert({
+                alertId: alert._id,
                 alertValue: alert.value,
                 commodityName: commodity.name,
                 type: 'buy',
@@ -107,6 +107,7 @@ sock.on('message', (message) => {
           if (alert.trigger === 'above') {
             if (commodity.sellPrice > alert.value) {
               sendAlert({
+                alertId: alert._id,
                 alertValue: alert.value,
                 commodityName: commodity.name,
                 type: 'sell',
@@ -120,6 +121,7 @@ sock.on('message', (message) => {
           } else if (alert.trigger === 'below') {
             if (commodity.sellPrice < alert.value) {
               sendAlert({
+                alertId: alert._id,
                 alertValue: alert.value,
                 commodityName: commodity.name,
                 type: 'sell',

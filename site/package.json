@@ -8,6 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
+    "@styled-icons/boxicons-regular": "^10.6.0",
     "@styled-system/css": "^5.1.5",
     "@svgr/webpack": "^5.4.0",
     "email-validator": "^2.0.4",

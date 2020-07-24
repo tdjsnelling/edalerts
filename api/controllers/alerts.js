@@ -1,3 +1,4 @@
+const request = require('request-promise')
 const Alert = require('../schema/Alert')
 
 module.exports = {
@@ -15,6 +16,20 @@ module.exports = {
           created: Date.now(),
         })
         await newAlert.save()
+        request({
+          uri: req.body.webhook,
+          method: 'post',
+          json: {
+            username: 'ED Alerts',
+            content: `Alert created successfully: ${req.body.commodity} ${
+              req.body.type
+            } ${req.body.trigger === 'above' ? '>' : '<'} ${
+              req.body.value
+            }. Click here to delete: https://edalerts.app/delete/${
+              newAlert._id
+            }`,
+          },
+        })
         res.send(newAlert._id)
       } catch (err) {
         res.status(500).send(err.message)
@@ -37,8 +52,12 @@ module.exports = {
   },
   delete: async (req, res) => {
     try {
-      await Alert.deleteOne({ _id: req.params.id })
-      res.sendStatus(200)
+      const del = await Alert.deleteOne({ _id: req.params.id })
+      if (del.deletedCount > 0) {
+        res.sendStatus(200)
+      } else {
+        res.sendStatus(404)
+      }
     } catch (err) {
       res.status(500).send(err.message)
     }
