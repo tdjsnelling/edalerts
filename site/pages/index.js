@@ -1,5 +1,6 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Box, Heading, Text } from 'rebass/styled-components'
+import GA from 'react-ga'
 import Layout from '../components/Layout'
 import Button from '../components/Button'
 import Input from '../components/Input'
@@ -10,6 +11,11 @@ import commodities from '../commodities.json'
 const Index = () => {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
+
+  useEffect(() => {
+    GA.initialize('UA-87488863-7')
+    GA.pageview(window.location.pathname + window.location.search)
+  }, [])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -33,6 +39,11 @@ const Index = () => {
       if (res.ok) {
         setSuccess(true)
         setError(null)
+
+        GA.event({
+          category: 'Alert',
+          action: 'Created',
+        })
       } else {
         setSuccess(false)
         setError(`${res.status} ${res.statusText}`)

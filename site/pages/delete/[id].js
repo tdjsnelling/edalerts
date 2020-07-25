@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter } from 'next/router'
 import { Heading, Text } from 'rebass/styled-components'
+import GA from 'react-ga'
 import Layout from '../../components/Layout'
 
 const Index = () => {
@@ -11,6 +12,9 @@ const Index = () => {
   } = useRouter()
 
   useEffect(() => {
+    GA.initialize('UA-87488863-7')
+    GA.pageview(window.location.pathname + window.location.search)
+
     const deleteAlert = async () => {
       try {
         const res = await fetch(
@@ -26,6 +30,11 @@ const Index = () => {
         if (res.ok) {
           setSuccess(true)
           setError(null)
+
+          GA.event({
+            category: 'Alert',
+            action: 'Deleted',
+          })
         } else {
           setSuccess(false)
           setError(`${res.status} ${res.statusText}`)
