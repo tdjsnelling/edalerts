@@ -26,7 +26,8 @@ const sendAlert = async ({
       embeds: [
         {
           title: title,
-          color: 7506394,
+          color: 16284416,
+          timestamp: new Date().toISOString(),
           author: {
             name: 'ED Alerts',
             url: 'https://edalerts.app',
@@ -51,7 +52,6 @@ const sendAlert = async ({
           footer: {
             text: 'ED Alerts',
           },
-          timestamp: new Date().toISOString(),
         },
       ],
       username: 'ED Alerts',

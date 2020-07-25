@@ -51,7 +51,7 @@ const StyledInput = styled.input(
       display,
       width,
       appearance: 'none',
-      '&:focus': { outline: 0 },
+      '&:focus': { outline: 0, borderColor: 'primary' },
     })
 )
 

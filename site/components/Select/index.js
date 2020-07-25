@@ -58,7 +58,7 @@ const StyledSelect = styled.select(
       display,
       width,
       appearance: 'none',
-      '&:focus': { outline: 0 },
+      '&:focus': { outline: 0, borderColor: 'primary' },
     })
 )
 

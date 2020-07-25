@@ -105,7 +105,7 @@ const Index = () => {
               mb={3}
               required
             />
-            <Button width={1}>Submit</Button>
+            <Button width={1}>Create alert</Button>
           </form>
           {error && (
             <Text as="p" mt={3} fontSize={[2, 3]} color="error">
