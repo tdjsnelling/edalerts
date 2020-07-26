@@ -7,6 +7,8 @@ const chalk = require('chalk')
 
 const alertRoutes = require('./routes/alerts')
 
+require('./listen')
+
 const colorizeStatus = (status) => {
   if (status.startsWith('2')) {
     return chalk.green(status)
@@ -33,6 +35,10 @@ app.use(bodyParser.json())
 app.use(cors())
 
 app.use(alertRoutes)
+
+app.get('', (req, res) => {
+  res.sendStatus(200)
+})
 
 const PORT = process.env.PORT || 3001
 

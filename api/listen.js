@@ -60,15 +60,13 @@ const sendAlert = async ({
 }
 
 sock.connect('tcp://eddn.edcd.io:9500')
-console.log('Worker connected to port 9500')
+console.log('listener: worker connected to eddn.edcd.io:9500')
 
 sock.subscribe('')
 
 sock.on('message', (message) => {
   const inflated = JSON.parse(zlib.inflateSync(message))
   if (inflated['$schemaRef'] === 'https://eddn.edcd.io/schemas/commodity/3') {
-    //console.log(JSON.stringify(inflated, null, 2))
-
     const commodities = inflated.message.commodities
     commodities.forEach(async (commodity) => {
       const alerts = await Alert.find({ commodity: commodity.name })
