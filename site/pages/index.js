@@ -29,7 +29,7 @@ const Index = () => {
 
     GA.initialize('UA-87488863-7')
     GA.pageview(window.location.pathname + window.location.search)
-    //getBackendStatus()
+    getBackendStatus()
   }, [])
 
   const handleSubmit = async (e) => {
