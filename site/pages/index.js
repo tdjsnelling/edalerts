@@ -89,7 +89,12 @@ const Index = () => {
           mt="1px"
           sx={{ borderRadius: '50%' }}
         />
-        <Text color="grey" lineHeight={1}>
+        <Text
+          as="a"
+          href="https://status.edalerts.app"
+          color="grey"
+          lineHeight={1}
+        >
           market listener {backendOk ? '' : 'not'} running
         </Text>
       </Flex>
@@ -138,7 +143,7 @@ const Index = () => {
               />
             </Box>
             <Input
-              type="text"
+              type="url"
               name="webhook"
               placeholder="discord webhook url"
               mb={3}

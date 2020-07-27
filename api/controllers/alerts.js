@@ -8,7 +8,9 @@ module.exports = {
       req.body.type &&
       req.body.trigger &&
       req.body.value &&
-      req.body.webhook
+      req.body.value > 0 &&
+      req.body.webhook &&
+      req.body.webhook.startsWith('https://discordapp.com/api/webhooks/')
     ) {
       try {
         const newAlert = new Alert({
