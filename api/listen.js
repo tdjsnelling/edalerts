@@ -23,6 +23,8 @@ const sendAlert = async ({
     uri: webhookUrl,
     method: 'post',
     json: {
+      username: 'ED Alerts',
+      avatar_url: 'https://edalerts.app/favicon.png',
       embeds: [
         {
           title: title,
@@ -54,7 +56,6 @@ const sendAlert = async ({
           },
         },
       ],
-      username: 'ED Alerts',
     },
   })
 }

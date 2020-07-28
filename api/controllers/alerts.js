@@ -23,6 +23,7 @@ module.exports = {
           method: 'post',
           json: {
             username: 'ED Alerts',
+            avatar_url: 'https://edalerts.app/favicon.png',
             content: `Alert created successfully: ${req.body.commodity} ${
               req.body.type
             } ${req.body.trigger === 'above' ? '>' : '<'} ${
