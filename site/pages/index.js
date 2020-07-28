@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react'
+import Head from 'next/head'
 import { Flex, Box, Heading, Text } from 'rebass/styled-components'
 import GA from 'react-ga'
+import { createGlobalStyle } from 'styled-components'
 import Layout from '../components/Layout'
 import Button from '../components/Button'
 import Input from '../components/Input'
@@ -8,6 +10,12 @@ import Select from '../components/Select'
 
 import commodities from '../commodities.json'
 import rarecommodities from '../rarecommodities.json'
+
+const RecaptchaStyle = createGlobalStyle`
+  .grecaptcha-badge {
+    display: none;
+  }
+`
 
 const Index = () => {
   const [backendOk, setBackendOk] = useState(true)
@@ -35,9 +43,19 @@ const Index = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault()
+    setSuccess(false)
+    setError(false)
 
     try {
       const form = new FormData(e.target)
+
+      const token = await grecaptcha.execute(
+        '6LcaQLcZAAAAAKiWMe5dw56olYAlxsC3m3zc-8NO',
+        {
+          action: 'submit',
+        }
+      )
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/alert`, {
         method: 'post',
         headers: {
@@ -49,6 +67,7 @@ const Index = () => {
           trigger: form.get('trigger'),
           value: form.get('value'),
           webhook: form.get('webhook'),
+          token: token,
         }),
       })
 
@@ -77,115 +96,121 @@ const Index = () => {
   }
 
   return (
-    <Layout>
-      <Heading as="h1" fontSize={[5, 7]}>
-        ED Alerts
-      </Heading>
-      <Flex alignItems="center" mb={3}>
-        <Box
-          bg={backendOk ? 'limegreen' : 'red'}
-          width="8px"
-          height="8px"
-          mr="8px"
-          mt="1px"
-          sx={{ borderRadius: '50%' }}
-        />
-        <Text
-          as="a"
-          href="https://status.edalerts.app"
-          color="grey"
-          lineHeight={1}
-        >
-          market listener {backendOk ? '' : 'not'} running
-        </Text>
-      </Flex>
-      <Text as="p" fontSize={[2, 3]} mb={3} color="grey">
-        create Elite: Dangerous commodity market alerts. get notified when a
-        specific commodity buys or sells above or below a certain value.
-      </Text>
-      {!success && (
-        <>
-          <Text fontSize={[2, 3]} mb={2} color="grey">
-            alert me when...
+    <>
+      <Head>
+        <script src="https://www.google.com/recaptcha/api.js?render=6LcaQLcZAAAAAKiWMe5dw56olYAlxsC3m3zc-8NO" />
+      </Head>
+      <RecaptchaStyle />
+      <Layout>
+        <Heading as="h1" fontSize={[5, 7]}>
+          ED Alerts
+        </Heading>
+        <Flex alignItems="center" mb={3}>
+          <Box
+            bg={backendOk ? 'limegreen' : 'red'}
+            width="8px"
+            height="8px"
+            mr="8px"
+            mt="1px"
+            sx={{ borderRadius: '50%' }}
+          />
+          <Text
+            as="a"
+            href="https://status.edalerts.app"
+            color="grey"
+            lineHeight={1}
+          >
+            market listener {backendOk ? '' : 'not'} running
           </Text>
-          <form onSubmit={handleSubmit}>
-            <Select name="commodity" mb={2} required>
-              <optgroup label="Commodities">
-                {commodities.sort(sortName).map((commodity) => (
-                  <option
-                    key={commodity.id}
-                    value={commodity.symbol.toLowerCase()}
-                  >
-                    {commodity.name}
-                  </option>
-                ))}
-              </optgroup>
-              <optgroup label="Rare commodities">
-                {rarecommodities.sort(sortName).map((commodity) => (
-                  <option
-                    key={commodity.id}
-                    value={commodity.symbol.toLowerCase()}
-                  >
-                    {commodity.name}
-                  </option>
-                ))}
-              </optgroup>
-            </Select>
-            <Box
-              mb={2}
-              sx={{
-                display: 'grid',
-                gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(3, 1fr)'],
-                gridGap: [2, 1],
-              }}
-            >
-              <Select name="type" required>
-                <option value="sell">sell</option>
-                <option value="buy">buy</option>
+        </Flex>
+        <Text as="p" fontSize={[2, 3]} mb={3} color="grey">
+          create Elite: Dangerous commodity market alerts. get notified when a
+          specific commodity buys or sells above or below a certain value.
+        </Text>
+        {!success && (
+          <>
+            <Text fontSize={[2, 3]} mb={2} color="grey">
+              alert me when...
+            </Text>
+            <form onSubmit={handleSubmit}>
+              <Select name="commodity" mb={2} required>
+                <optgroup label="Commodities">
+                  {commodities.sort(sortName).map((commodity) => (
+                    <option
+                      key={commodity.id}
+                      value={commodity.symbol.toLowerCase()}
+                    >
+                      {commodity.name}
+                    </option>
+                  ))}
+                </optgroup>
+                <optgroup label="Rare commodities">
+                  {rarecommodities.sort(sortName).map((commodity) => (
+                    <option
+                      key={commodity.id}
+                      value={commodity.symbol.toLowerCase()}
+                    >
+                      {commodity.name}
+                    </option>
+                  ))}
+                </optgroup>
               </Select>
-              <Select name="trigger" required>
-                <option value="above">above</option>
-                <option value="below">below</option>
-              </Select>
+              <Box
+                mb={2}
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(3, 1fr)'],
+                  gridGap: [2, 1],
+                }}
+              >
+                <Select name="type" required>
+                  <option value="sell">sell</option>
+                  <option value="buy">buy</option>
+                </Select>
+                <Select name="trigger" required>
+                  <option value="above">above</option>
+                  <option value="below">below</option>
+                </Select>
+                <Input
+                  type="number"
+                  name="value"
+                  placeholder="value"
+                  min={0}
+                  required
+                />
+              </Box>
               <Input
-                type="number"
-                name="value"
-                placeholder="value"
-                min={0}
+                type="url"
+                name="webhook"
+                placeholder="discord webhook url"
+                mb={3}
                 required
               />
-            </Box>
-            <Input
-              type="url"
-              name="webhook"
-              placeholder="discord webhook url"
-              mb={3}
-              required
-            />
-            <Button width={1}>Create alert</Button>
-          </form>
-          {error && (
-            <Text as="p" mt={3} fontSize={[2, 3]} color="error">
-              error: {error}
-            </Text>
-          )}
-        </>
-      )}
-      {success && (
-        <Text as="p" fontSize={[2, 3]}>
-          your alert was created successfully.
+              <Button width={1}>Create alert</Button>
+            </form>
+            {error && (
+              <Text as="p" mt={3} fontSize={[2, 3]} color="error">
+                error: {error}
+              </Text>
+            )}
+          </>
+        )}
+        {success && (
+          <Text as="p" fontSize={[2, 3]}>
+            your alert was created successfully.
+          </Text>
+        )}
+        <Text
+          as="a"
+          href="mailto:contact@edalerts.app"
+          color="grey"
+          display="inline-block"
+          mt={3}
+        >
+          contact@edalerts.app
         </Text>
-      )}
-      <Text
-        as="a"
-        href="mailto:contact@edalerts.app"
-        color="grey"
-        display="inline-block"
-        mt={3}
-      >
-        contact@edalerts.app
-      </Text>
-    </Layout>
+      </Layout>
+    </>
   )
 }
 

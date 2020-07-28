@@ -10,30 +10,46 @@ module.exports = {
       req.body.value &&
       req.body.value > 0 &&
       req.body.webhook &&
-      req.body.webhook.startsWith('https://discordapp.com/api/webhooks/')
+      req.body.webhook.startsWith('https://discordapp.com/api/webhooks/') &&
+      req.body.token
     ) {
       try {
-        const newAlert = new Alert({
-          ...req.body,
-          created: Date.now(),
-        })
-        await newAlert.save()
-        request({
-          uri: req.body.webhook,
+        let recaptcha = await request({
+          uri: 'https://www.google.com/recaptcha/api/siteverify',
           method: 'post',
-          json: {
-            username: 'ED Alerts',
-            avatar_url: 'https://edalerts.app/favicon.png',
-            content: `Alert created successfully: ${req.body.commodity} ${
-              req.body.type
-            } ${req.body.trigger === 'above' ? '>' : '<'} ${
-              req.body.value
-            }. Click here to delete: https://edalerts.app/delete/${
-              newAlert._id
-            }`,
+          form: {
+            secret: '6LcaQLcZAAAAAHTHBY5SWiUJbl2eRgb50Sqnoz17',
+            response: req.body.token,
           },
         })
-        res.send(newAlert._id)
+        recaptcha = JSON.parse(recaptcha)
+
+        if (recaptcha.success && recaptcha.score > 0.5) {
+          const newAlert = new Alert({
+            ...req.body,
+            created: Date.now(),
+          })
+          await newAlert.save()
+
+          await request({
+            uri: req.body.webhook,
+            method: 'post',
+            json: {
+              username: 'ED Alerts',
+              avatar_url: 'https://edalerts.app/favicon.png',
+              content: `Alert created successfully: ${req.body.commodity} ${
+                req.body.type
+              } ${req.body.trigger === 'above' ? '>' : '<'} ${
+                req.body.value
+              }. Click here to delete: https://edalerts.app/delete/${
+                newAlert._id
+              }`,
+            },
+          })
+          res.send(newAlert._id)
+        } else {
+          res.status(401).send('reCAPTCHA failed')
+        }
       } catch (err) {
         res.status(500).send(err.message)
       }
