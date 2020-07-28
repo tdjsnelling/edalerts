@@ -3,6 +3,7 @@ import Head from 'next/head'
 import { Flex, Box, Heading, Text } from 'rebass/styled-components'
 import GA from 'react-ga'
 import { createGlobalStyle } from 'styled-components'
+import { HelpCircle } from '@styled-icons/boxicons-regular'
 import Layout from '../components/Layout'
 import Button from '../components/Button'
 import Input from '../components/Input'
@@ -21,6 +22,7 @@ const Index = () => {
   const [backendOk, setBackendOk] = useState(true)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
+  const [showHelp, setShowHelp] = useState(false)
 
   useEffect(() => {
     const getBackendStatus = async () => {
@@ -124,7 +126,7 @@ const Index = () => {
           </Text>
         </Flex>
         <Text as="p" fontSize={[2, 3]} mb={3} color="grey">
-          create Elite: Dangerous commodity market alerts. get notified when a
+          create Elite Dangerous commodity market alerts. get notified when a
           specific commodity buys or sells above or below a certain value.
         </Text>
         {!success && (
@@ -179,13 +181,36 @@ const Index = () => {
                   required
                 />
               </Box>
-              <Input
-                type="url"
-                name="webhook"
-                placeholder="discord webhook url"
-                mb={3}
-                required
-              />
+              <Flex alignItems="center" mb={showHelp ? 1 : 3}>
+                <Input
+                  type="url"
+                  name="webhook"
+                  placeholder="discord webhook url"
+                  mr={1}
+                  required
+                />
+                <Box
+                  color={showHelp ? 'primary' : 'grey'}
+                  onClick={() => setShowHelp(!showHelp)}
+                  css={{ cursor: 'pointer' }}
+                >
+                  <HelpCircle size={32} />
+                </Box>
+              </Flex>
+              {showHelp && (
+                <Text color="grey" mb={3}>
+                  ED Alerts sends notifications via{' '}
+                  <Text as="a" href="https://discord.com" color="grey">
+                    Discord
+                  </Text>
+                  . to create a webhook, you first need a Discord server - this
+                  could be an existing one you have suitable permissions in or
+                  you can create one for free. next, edit the settings of a text
+                  channel, select ‘integrations’ and then ‘webhooks’. create a
+                  new webhook, and copy the url here. don’t worry about the name
+                  and avatar, as these will be overwritten by ED Alerts.
+                </Text>
+              )}
               <Button width={1}>Create alert</Button>
             </form>
             {error && (

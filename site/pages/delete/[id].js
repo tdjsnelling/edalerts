@@ -54,7 +54,7 @@ const Index = () => {
         ED Alerts
       </Heading>
       <Text as="p" fontSize={[2, 3]} mb={3} color="grey">
-        create Elite: Dangerous commodity market alerts. get notified when a
+        create Elite Dangerous commodity market alerts. get notified when a
         specific commodity buys or sells above or below a certain value.
       </Text>
       {!success && !error && (
