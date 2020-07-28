@@ -1143,37 +1143,37 @@
     "id": 128732183,
     "symbol": "AncientRelic",
     "category": "Salvage",
-    "name": "Ancient Relic"
+    "name": "Guardian Relic"
   },
   {
     "id": 128732184,
     "symbol": "AncientOrb",
     "category": "Salvage",
-    "name": "Ancient Orb"
+    "name": "Guardian Orb"
   },
   {
     "id": 128732185,
     "symbol": "AncientCasket",
     "category": "Salvage",
-    "name": "Ancient Casket"
+    "name": "Guardian Casket"
   },
   {
     "id": 128732186,
     "symbol": "AncientTablet",
     "category": "Salvage",
-    "name": "Ancient Tablet"
+    "name": "Guardian Tablet"
   },
   {
     "id": 128732187,
     "symbol": "AncientUrn",
     "category": "Salvage",
-    "name": "Ancient Urn"
+    "name": "Guardian Urn"
   },
   {
     "id": 128732188,
     "symbol": "AncientTotem",
     "category": "Salvage",
-    "name": "Ancient Totem"
+    "name": "Guardian Totem"
   },
   {
     "id": 128737287,
@@ -1242,16 +1242,88 @@
     "name": "Thargoid Hydra Tissue Sample"
   },
   {
-    "id": 128913661,
-    "symbol": "Nanomedicines",
-    "category": "Medicines",
-    "name": "Nanomedicines"
+    "id": 128922517,
+    "symbol": "M_TissueSample_Fluid",
+    "category": "Salvage",
+    "name": "Mollusc Fluid"
   },
   {
-    "id": 128922524,
-    "symbol": "Duradrives",
-    "category": "Consumer Items",
-    "name": "Duradrives"
+    "id": 128922518,
+    "symbol": "M_TissueSample_Soft",
+    "category": "Salvage",
+    "name": "Mollusc Soft Tissue"
+  },
+  {
+    "id": 128922519,
+    "symbol": "M_TissueSample_Nerves",
+    "category": "Salvage",
+    "name": "Mollusc Brain Tissue"
+  },
+  {
+    "id": 128922520,
+    "symbol": "S_TissueSample_Cells",
+    "category": "Salvage",
+    "name": "Pod Core Tissue"
+  },
+  {
+    "id": 128922521,
+    "symbol": "S_TissueSample_Surface",
+    "category": "Salvage",
+    "name": "Pod Dead Tissue"
+  },
+  {
+    "id": 128922522,
+    "symbol": "S_TissueSample_Core",
+    "category": "Salvage",
+    "name": "Pod Surface Tissue"
+  },
+  {
+    "id": 128922523,
+    "symbol": "P_ParticulateSample",
+    "category": "Salvage",
+    "name": "Anomaly Particles"
+  },
+  {
+    "id": 128922781,
+    "symbol": "S9_TissueSample_Shell",
+    "category": "Salvage",
+    "name": "Pod Tissue"
+  },
+  {
+    "id": 128922782,
+    "symbol": "M3_TissueSample_Membrane",
+    "category": "Salvage",
+    "name": "Mollusc Membrane"
+  },
+  {
+    "id": 128922783,
+    "symbol": "M3_TissueSample_Mycelium",
+    "category": "Salvage",
+    "name": "Mollusc Mycelium"
+  },
+  {
+    "id": 128922784,
+    "symbol": "M3_TissueSample_Spores",
+    "category": "Salvage",
+    "name": "Mollusc Spores"
+  },
+  {
+    "id": 128922785,
+    "symbol": "S6_TissueSample_Mesoglea",
+    "category": "Salvage",
+    "name": "Pod Mesoglea"
+  },
+  {
+    "id": 128922786,
+    "symbol": "S6_TissueSample_Cells",
+    "category": "Salvage",
+    "name": "Pod Outer Tissue"
+  },
+  {
+    "id": 128922787,
+    "symbol": "S6_TissueSample_Coenosarc",
+    "category": "Salvage",
+    "name": "Pod Shell Tissue"
   },
   {
     "id": 128924325,
@@ -1312,5 +1384,11 @@
     "symbol": "AgronomicTreatment",
     "category": "Chemicals",
     "name": "Agronomic Treatment"
+  },
+  {
+    "id": 128961249,
+    "symbol": "Tritium",
+    "category": "Chemicals",
+    "name": "Tritium"
   }
 ]

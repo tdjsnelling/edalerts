@@ -7,6 +7,7 @@ import Input from '../components/Input'
 import Select from '../components/Select'
 
 import commodities from '../commodities.json'
+import rarecommodities from '../rarecommodities.json'
 
 const Index = () => {
   const [backendOk, setBackendOk] = useState(true)
@@ -109,14 +110,26 @@ const Index = () => {
           </Text>
           <form onSubmit={handleSubmit}>
             <Select name="commodity" mb={2} required>
-              {commodities.sort(sortName).map((commodity) => (
-                <option
-                  key={commodity.id}
-                  value={commodity.symbol.toLowerCase()}
-                >
-                  {commodity.name}
-                </option>
-              ))}
+              <optgroup label="Commodities">
+                {commodities.sort(sortName).map((commodity) => (
+                  <option
+                    key={commodity.id}
+                    value={commodity.symbol.toLowerCase()}
+                  >
+                    {commodity.name}
+                  </option>
+                ))}
+              </optgroup>
+              <optgroup label="Rare commodities">
+                {rarecommodities.sort(sortName).map((commodity) => (
+                  <option
+                    key={commodity.id}
+                    value={commodity.symbol.toLowerCase()}
+                  >
+                    {commodity.name}
+                  </option>
+                ))}
+              </optgroup>
             </Select>
             <Box
               mb={2}
