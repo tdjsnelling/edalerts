@@ -222,7 +222,18 @@ const Index = () => {
         )}
         {success && (
           <Text as="p" fontSize={[2, 3]}>
-            your alert was created successfully.
+            your alert was created successfully. why not{' '}
+            <Text
+              as="span"
+              onClick={() => {
+                setSuccess(false)
+                setError(null)
+              }}
+              css={{ textDecoration: 'underline', cursor: 'pointer' }}
+            >
+              create another
+            </Text>
+            ?
           </Text>
         )}
         <Text
