@@ -13,6 +13,8 @@ const sendAlert = async ({
   value,
   station,
   system,
+  supply,
+  demand,
   webhookUrl,
 }) => {
   const title = `Alert triggered: ${commodityName} ${type} ${
@@ -44,6 +46,16 @@ const sendAlert = async ({
               name: 'Location',
               value: `${station}, ${system}`,
               inline: false,
+            },
+            {
+              name: 'Supply',
+              value: supply,
+              inline: true,
+            },
+            {
+              name: 'Demand',
+              value: demand,
+              inline: true,
             },
             {
               name: 'Delete this alert',
@@ -84,6 +96,8 @@ sock.on('message', (message) => {
                 value: commodity.buyPrice,
                 station: inflated.message.stationName,
                 system: inflated.message.systemName,
+                demand: commodity.demand,
+                supply: commodity.stock,
                 webhookUrl: alert.webhook,
               })
             }
@@ -98,6 +112,8 @@ sock.on('message', (message) => {
                 value: commodity.buyPrice,
                 station: inflated.message.stationName,
                 system: inflated.message.systemName,
+                demand: commodity.demand,
+                supply: commodity.stock,
                 webhookUrl: alert.webhook,
               })
             }
@@ -114,6 +130,8 @@ sock.on('message', (message) => {
                 value: commodity.sellPrice,
                 station: inflated.message.stationName,
                 system: inflated.message.systemName,
+                demand: commodity.demand,
+                supply: commodity.stock,
                 webhookUrl: alert.webhook,
               })
             }
@@ -128,6 +146,8 @@ sock.on('message', (message) => {
                 value: commodity.sellPrice,
                 station: inflated.message.stationName,
                 system: inflated.message.systemName,
+                demand: commodity.demand,
+                supply: commodity.stock,
                 webhookUrl: alert.webhook,
               })
             }
