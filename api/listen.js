@@ -3,6 +3,7 @@ const zmq = require('zeromq')
 const sock = zmq.socket('sub')
 const request = require('request-promise')
 const Alert = require('./schema/Alert')
+const stations = require('./stations.json')
 
 const sendAlert = async ({
   alertId,
@@ -15,6 +16,7 @@ const sendAlert = async ({
   system,
   supply,
   demand,
+  maxPadSize,
   webhookUrl,
 }) => {
   const title = `Alert triggered: ${commodityName} ${type} ${
@@ -46,6 +48,11 @@ const sendAlert = async ({
               name: 'Location',
               value: `${station}, ${system}`,
               inline: false,
+            },
+            {
+              name: 'Max. pad size',
+              value: maxPadSize,
+              inline: true,
             },
             {
               name: 'Supply',
@@ -80,13 +87,25 @@ sock.subscribe('')
 sock.on('message', (message) => {
   const inflated = JSON.parse(zlib.inflateSync(message))
   if (inflated['$schemaRef'] === 'https://eddn.edcd.io/schemas/commodity/3') {
+    const [station] = stations.filter(
+      (st) => st.name === inflated.message.stationName
+    )
+    const maxPadSize = station ? station.max_landing_pad_size : 'unknown'
     const commodities = inflated.message.commodities
     commodities.forEach(async (commodity) => {
       const alerts = await Alert.find({ commodity: commodity.name })
       alerts.forEach(async (alert) => {
-        if (alert.type === 'buy' && commodity.buyPrice !== 0) {
-          if (alert.trigger === 'above') {
-            if (commodity.buyPrice > alert.value) {
+        if (
+          alert.pad === 'any' ||
+          (alert.pad === 'l' && maxPadSize === 'L') ||
+          maxPadSize === 'unknown'
+        ) {
+          if (
+            alert.type === 'buy' &&
+            commodity.buyPrice !== 0 &&
+            commodity.supply > alert.minSupply
+          ) {
+            if (alert.trigger === 'above' && commodity.buyPrice > alert.value) {
               sendAlert({
                 alertId: alert._id,
                 alertValue: alert.value,
@@ -98,11 +117,13 @@ sock.on('message', (message) => {
                 system: inflated.message.systemName,
                 demand: commodity.demand,
                 supply: commodity.stock,
+                maxPadSize: maxPadSize,
                 webhookUrl: alert.webhook,
               })
-            }
-          } else if (alert.trigger === 'below') {
-            if (commodity.buyPrice < alert.value) {
+            } else if (
+              alert.trigger === 'below' &&
+              commodity.buyPrice < alert.value
+            ) {
               sendAlert({
                 alertId: alert._id,
                 alertValue: alert.value,
@@ -114,13 +135,19 @@ sock.on('message', (message) => {
                 system: inflated.message.systemName,
                 demand: commodity.demand,
                 supply: commodity.stock,
+                maxPadSize: maxPadSize,
                 webhookUrl: alert.webhook,
               })
             }
-          }
-        } else if (alert.type === 'sell' && commodity.sellPrice !== 0) {
-          if (alert.trigger === 'above') {
-            if (commodity.sellPrice > alert.value) {
+          } else if (
+            alert.type === 'sell' &&
+            commodity.sellPrice !== 0 &&
+            commodity.demand > alert.minDemand
+          ) {
+            if (
+              alert.trigger === 'above' &&
+              commodity.sellPrice > alert.value
+            ) {
               sendAlert({
                 alertId: alert._id,
                 alertValue: alert.value,
@@ -132,11 +159,13 @@ sock.on('message', (message) => {
                 system: inflated.message.systemName,
                 demand: commodity.demand,
                 supply: commodity.stock,
+                maxPadSize: maxPadSize,
                 webhookUrl: alert.webhook,
               })
-            }
-          } else if (alert.trigger === 'below') {
-            if (commodity.sellPrice < alert.value) {
+            } else if (
+              alert.trigger === 'below' &&
+              commodity.sellPrice < alert.value
+            ) {
               sendAlert({
                 alertId: alert._id,
                 alertValue: alert.value,
@@ -148,6 +177,7 @@ sock.on('message', (message) => {
                 system: inflated.message.systemName,
                 demand: commodity.demand,
                 supply: commodity.stock,
+                maxPadSize: maxPadSize,
                 webhookUrl: alert.webhook,
               })
             }

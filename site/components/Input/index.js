@@ -23,7 +23,7 @@ const StyledInput = styled.input(
   display,
   ({
     px = 2,
-    py = '15px',
+    py = '12px',
     pl = '15px',
     pr = '15px',
     bg = 'black',

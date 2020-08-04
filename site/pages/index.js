@@ -23,6 +23,7 @@ const Index = () => {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
   const [showHelp, setShowHelp] = useState(false)
+  const [alertType, setAlertType] = useState('sell')
 
   useEffect(() => {
     const getBackendStatus = async () => {
@@ -68,6 +69,9 @@ const Index = () => {
           type: form.get('type'),
           trigger: form.get('trigger'),
           value: form.get('value'),
+          minSupply: form.get('minSupply'),
+          minDemand: form.get('minDemand'),
+          pad: form.get('pad'),
           webhook: form.get('webhook'),
           token: token,
         }),
@@ -165,7 +169,11 @@ const Index = () => {
                   gridGap: [2, 1],
                 }}
               >
-                <Select name="type" required>
+                <Select
+                  name="type"
+                  onChange={(e) => setAlertType(e.target.value)}
+                  required
+                >
                   <option value="sell">sell</option>
                   <option value="buy">buy</option>
                 </Select>
@@ -180,6 +188,37 @@ const Index = () => {
                   min={0}
                   required
                 />
+              </Box>
+              <Box
+                mb={2}
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(2, 1fr)'],
+                  gridGap: [2, 1],
+                }}
+              >
+                {alertType === 'buy' && (
+                  <Input
+                    type="number"
+                    name="minSupply"
+                    placeholder="min. supply"
+                    min={0}
+                    required
+                  />
+                )}
+                {alertType === 'sell' && (
+                  <Input
+                    type="number"
+                    name="minDemand"
+                    placeholder="min. demand"
+                    min={0}
+                    required
+                  />
+                )}
+                <Select name="pad" required>
+                  <option value="any">any pad size</option>
+                  <option value="l">large pad required</option>
+                </Select>
               </Box>
               <Flex alignItems="center" mb={showHelp ? 1 : 3}>
                 <Input
@@ -226,8 +265,7 @@ const Index = () => {
             <Text
               as="span"
               onClick={() => {
-                setSuccess(false)
-                setError(null)
+                window.location.reload()
               }}
               css={{ textDecoration: 'underline', cursor: 'pointer' }}
             >

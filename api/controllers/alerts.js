@@ -9,6 +9,9 @@ module.exports = {
       req.body.trigger &&
       req.body.value &&
       req.body.value > 0 &&
+      ((req.body.type === 'sell' && req.body.minDemand) ||
+        (req.body.type === 'buy' && req.body.minSupply)) &&
+      req.body.pad &&
       req.body.webhook &&
       req.body.webhook.startsWith('https://discordapp.com/api/webhooks/') &&
       req.body.token

@@ -12,6 +12,9 @@ const Alert = new mongoose.Schema({
   trigger: String,
   value: Number,
   webhook: String,
+  minSupply: Number,
+  minDemand: Number,
+  pad: String,
   created: Number,
 })
 

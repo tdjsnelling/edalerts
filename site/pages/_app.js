@@ -52,19 +52,19 @@ const NockHost = ({ Component, pageProps }) => (
       <title>ED Alerts — Elite: Dangerous commodity market alerts</title>
       <meta
         property="og:title"
-        content="ED Alerts — Elite: Dangerous commodity market alerts"
+        content="ED Alerts — Elite Dangerous commodity market alerts"
       />
       <meta
         name="description"
-        content="create Elite: Dangerous commodity market alerts. get notified when a specific commodity buys or sells above or below a certain value."
+        content="create Elite Dangerous commodity market alerts. get notified when a specific commodity buys or sells above or below a certain value."
       />
       <meta
         property="og:description"
-        content="create Elite: Dangerous commodity market alerts. get notified when a specific commodity buys or sells above or below a certain value."
+        content="create Elite Dangerous commodity market alerts. get notified when a specific commodity buys or sells above or below a certain value."
       />
       <meta
         property="og:site_name"
-        content="ED Alerts — Elite: Dangerous commodity market alerts"
+        content="ED Alerts — Elite Dangerous commodity market alerts"
       />
       <meta property="og:type" content="website" />
       <meta property="og:url" content="https://edalerts.app" />
