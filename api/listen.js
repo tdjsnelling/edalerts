@@ -4,6 +4,8 @@ const sock = zmq.socket('sub')
 const request = require('request-promise')
 const Alert = require('./schema/Alert')
 const stations = require('./stations.json')
+const commodityData = require('../site/commodities.json')
+const rareCommodityData = require('../site/rarecommodities.json')
 
 const sendAlert = async ({
   alertId,
@@ -19,9 +21,13 @@ const sendAlert = async ({
   maxPadSize,
   webhookUrl,
 }) => {
-  const title = `Alert triggered: ${commodityName} ${type} ${
-    trigger === 'above' ? '>' : '<'
-  } ${alertValue}`
+  const [commodity] = commodityData
+    .concat(rareCommodityData)
+    .filter((com) => com.symbol.toLowerCase() === commodityName.toLowerCase())
+
+  const title = `Alert triggered: ${
+    commodity ? commodity.name : commodityName
+  } ${type} ${trigger === 'above' ? '>' : '<'} ${alertValue}`
 
   await request({
     uri: webhookUrl,

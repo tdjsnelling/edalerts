@@ -1,5 +1,7 @@
 const request = require('request-promise')
 const Alert = require('../schema/Alert')
+const commodities = require('../../site/commodities.json')
+const rareCommodities = require('../../site/rarecommodities.json')
 
 module.exports = {
   create: async (req, res) => {
@@ -34,19 +36,34 @@ module.exports = {
           })
           await newAlert.save()
 
+          const [commodity] = commodities
+            .concat(rareCommodities)
+            .filter(
+              (com) =>
+                com.symbol.toLowerCase() === req.body.commodity.toLowerCase()
+            )
+
+          const message = `Alert created successfully: ${
+            commodity ? commodity.name : req.body.commodity
+          } ${req.body.type} ${req.body.trigger === 'above' ? '>' : '<'} ${
+            req.body.value
+          }. Minimum ${req.body.type === 'sell' ? 'demand' : 'supply'} ${
+            req.body.type === 'sell' ? req.body.minDemand : req.body.minSupply
+          }. ${
+            req.body.pad === 'l'
+              ? 'Large landing pad only'
+              : 'Any landing pad size'
+          }.
+
+Click here to delete: https://edalerts.app/delete/${newAlert._id}`
+
           await request({
             uri: req.body.webhook,
             method: 'post',
             json: {
               username: 'ED Alerts',
               avatar_url: 'https://edalerts.app/favicon.png',
-              content: `Alert created successfully: ${req.body.commodity} ${
-                req.body.type
-              } ${req.body.trigger === 'above' ? '>' : '<'} ${
-                req.body.value
-              }. Click here to delete: https://edalerts.app/delete/${
-                newAlert._id
-              }`,
+              content: message,
             },
           })
           res.send(newAlert._id)
