@@ -15,7 +15,8 @@ module.exports = {
         (req.body.type === 'buy' && req.body.minSupply)) &&
       req.body.pad &&
       req.body.webhook &&
-      req.body.webhook.startsWith('https://discordapp.com/api/webhooks/') &&
+      (req.body.webhook.startsWith('https://discordapp.com/api/webhooks/') ||
+        req.body.webhook.startsWith('https://discord.com/api/webhooks/')) &&
       req.body.token
     ) {
       try {
