@@ -109,7 +109,7 @@ sock.on('message', (message) => {
           if (
             alert.type === 'buy' &&
             commodity.buyPrice !== 0 &&
-            commodity.supply > alert.minSupply
+            commodity.stock > alert.minSupply
           ) {
             if (alert.trigger === 'above' && commodity.buyPrice > alert.value) {
               sendAlert({
