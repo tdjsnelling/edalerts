@@ -20,7 +20,15 @@ const sendAlert = async ({
   demand,
   maxPadSize,
   webhookUrl,
+  freq,
 }) => {
+  if (freq > 0) {
+    await Alert.findOneAndUpdate(
+      { _id: alertId },
+      { $set: { lastSent: Date.now() } }
+    )
+  }
+
   const [commodity] = commodityData
     .concat(rareCommodityData)
     .filter((com) => com.symbol.toLowerCase() === commodityName.toLowerCase())
@@ -102,90 +110,102 @@ sock.on('message', (message) => {
       const alerts = await Alert.find({ commodity: commodity.name })
       alerts.forEach(async (alert) => {
         if (
-          alert.pad === 'any' ||
-          (alert.pad === 'l' && maxPadSize === 'L') ||
-          maxPadSize === 'unknown'
+          alert.freq === 0 ||
+          (alert.freq > 0 && Date.now() > alert.lastSent + alert.freq)
         ) {
           if (
-            alert.type === 'buy' &&
-            commodity.buyPrice !== 0 &&
-            commodity.stock > alert.minSupply
-          ) {
-            if (alert.trigger === 'above' && commodity.buyPrice > alert.value) {
-              sendAlert({
-                alertId: alert._id,
-                alertValue: alert.value,
-                commodityName: commodity.name,
-                type: 'buy',
-                trigger: 'above',
-                value: commodity.buyPrice,
-                station: inflated.message.stationName,
-                system: inflated.message.systemName,
-                demand: commodity.demand,
-                supply: commodity.stock,
-                maxPadSize: maxPadSize,
-                webhookUrl: alert.webhook,
-              })
-            } else if (
-              alert.trigger === 'below' &&
-              commodity.buyPrice < alert.value
-            ) {
-              sendAlert({
-                alertId: alert._id,
-                alertValue: alert.value,
-                commodityName: commodity.name,
-                type: 'buy',
-                trigger: 'below',
-                value: commodity.buyPrice,
-                station: inflated.message.stationName,
-                system: inflated.message.systemName,
-                demand: commodity.demand,
-                supply: commodity.stock,
-                maxPadSize: maxPadSize,
-                webhookUrl: alert.webhook,
-              })
-            }
-          } else if (
-            alert.type === 'sell' &&
-            commodity.sellPrice !== 0 &&
-            commodity.demand > alert.minDemand
+            alert.pad === 'any' ||
+            (alert.pad === 'l' && maxPadSize === 'L') ||
+            maxPadSize === 'unknown'
           ) {
             if (
-              alert.trigger === 'above' &&
-              commodity.sellPrice > alert.value
+              alert.type === 'buy' &&
+              commodity.buyPrice !== 0 &&
+              commodity.stock > alert.minSupply
             ) {
-              sendAlert({
-                alertId: alert._id,
-                alertValue: alert.value,
-                commodityName: commodity.name,
-                type: 'sell',
-                trigger: 'above',
-                value: commodity.sellPrice,
-                station: inflated.message.stationName,
-                system: inflated.message.systemName,
-                demand: commodity.demand,
-                supply: commodity.stock,
-                maxPadSize: maxPadSize,
-                webhookUrl: alert.webhook,
-              })
+              if (
+                alert.trigger === 'above' &&
+                commodity.buyPrice > alert.value
+              ) {
+                sendAlert({
+                  alertId: alert._id,
+                  alertValue: alert.value,
+                  commodityName: commodity.name,
+                  type: 'buy',
+                  trigger: 'above',
+                  value: commodity.buyPrice,
+                  station: inflated.message.stationName,
+                  system: inflated.message.systemName,
+                  demand: commodity.demand,
+                  supply: commodity.stock,
+                  maxPadSize: maxPadSize,
+                  webhookUrl: alert.webhook,
+                  freq: alert.freq,
+                })
+              } else if (
+                alert.trigger === 'below' &&
+                commodity.buyPrice < alert.value
+              ) {
+                sendAlert({
+                  alertId: alert._id,
+                  alertValue: alert.value,
+                  commodityName: commodity.name,
+                  type: 'buy',
+                  trigger: 'below',
+                  value: commodity.buyPrice,
+                  station: inflated.message.stationName,
+                  system: inflated.message.systemName,
+                  demand: commodity.demand,
+                  supply: commodity.stock,
+                  maxPadSize: maxPadSize,
+                  webhookUrl: alert.webhook,
+                  freq: alert.freq,
+                })
+              }
             } else if (
-              alert.trigger === 'below' &&
-              commodity.sellPrice < alert.value
+              alert.type === 'sell' &&
+              commodity.sellPrice !== 0 &&
+              commodity.demand > alert.minDemand
             ) {
-              sendAlert({
-                alertId: alert._id,
-                alertValue: alert.value,
-                commodityName: commodity.name,
-                type: 'sell',
-                trigger: 'below',
-                value: commodity.sellPrice,
-                station: inflated.message.stationName,
-                system: inflated.message.systemName,
-                demand: commodity.demand,
-                supply: commodity.stock,
-                maxPadSize: maxPadSize,
-                webhookUrl: alert.webhook,
-              })
+              if (
+                alert.trigger === 'above' &&
+                commodity.sellPrice > alert.value
+              ) {
+                sendAlert({
+                  alertId: alert._id,
+                  alertValue: alert.value,
+                  commodityName: commodity.name,
+                  type: 'sell',
+                  trigger: 'above',
+                  value: commodity.sellPrice,
+                  station: inflated.message.stationName,
+                  system: inflated.message.systemName,
+                  demand: commodity.demand,
+                  supply: commodity.stock,
+                  maxPadSize: maxPadSize,
+                  webhookUrl: alert.webhook,
+                  freq: alert.freq,
+                })
+              } else if (
+                alert.trigger === 'below' &&
+                commodity.sellPrice < alert.value
+              ) {
+                sendAlert({
+                  alertId: alert._id,
+                  alertValue: alert.value,
+                  commodityName: commodity.name,
+                  type: 'sell',
+                  trigger: 'below',
+                  value: commodity.sellPrice,
+                  station: inflated.message.stationName,
+                  system: inflated.message.systemName,
+                  demand: commodity.demand,
+                  supply: commodity.stock,
+                  maxPadSize: maxPadSize,
+                  webhookUrl: alert.webhook,
+                  freq: alert.freq,
+                })
+              }
             }
           }
         }

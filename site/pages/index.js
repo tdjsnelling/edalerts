@@ -73,6 +73,7 @@ const Index = () => {
           minDemand: form.get('minDemand'),
           pad: form.get('pad'),
           webhook: form.get('webhook'),
+          freq: form.get('freq'),
           token: token,
         }),
       })
@@ -129,7 +130,7 @@ const Index = () => {
             market listener {backendOk ? '' : 'not'} running
           </Text>
         </Flex>
-        <Text as="p" fontSize={[2, 3]} mb={3} color="grey">
+        <Text as="p" fontSize={[2, 3]} mb={2} color="grey">
           create Elite Dangerous commodity market alerts. get notified when a
           specific commodity buys or sells above or below a certain value.
         </Text>
@@ -220,7 +221,7 @@ const Index = () => {
                   <option value="l">large pad required</option>
                 </Select>
               </Box>
-              <Flex alignItems="center" mb={showHelp ? 1 : 3}>
+              <Flex alignItems="center" mb={showHelp ? 1 : 2}>
                 <Input
                   type="url"
                   name="webhook"
@@ -237,7 +238,7 @@ const Index = () => {
                 </Box>
               </Flex>
               {showHelp && (
-                <Text color="grey" mb={3}>
+                <Text color="grey" mb={2}>
                   ED Alerts sends notifications via{' '}
                   <Text as="a" href="https://discord.com" color="grey">
                     Discord
@@ -250,6 +251,14 @@ const Index = () => {
                   and avatar, as these will be overwritten by ED Alerts.
                 </Text>
               )}
+              <Select name="freq" mb={3} required>
+                <option value="0">as they happen</option>
+                <option value="10000">at most every 10 seconds</option>
+                <option value="30000">at most every 30 seconds</option>
+                <option value="60000">at most every 1 minute</option>
+                <option value="120000">at most every 2 minutes</option>
+                <option value="300000">at most every 5 minutes</option>
+              </Select>
               <Button width={1}>Create alert</Button>
             </form>
             {error && (

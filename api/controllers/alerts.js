@@ -17,6 +17,7 @@ module.exports = {
       req.body.webhook &&
       (req.body.webhook.startsWith('https://discordapp.com/api/webhooks/') ||
         req.body.webhook.startsWith('https://discord.com/api/webhooks/')) &&
+      req.body.freq &&
       req.body.token
     ) {
       try {
@@ -33,6 +34,7 @@ module.exports = {
         if (recaptcha.success && recaptcha.score > 0.5) {
           const newAlert = new Alert({
             ...req.body,
+            lastSent: 0,
             created: Date.now(),
           })
           await newAlert.save()
@@ -44,6 +46,7 @@ module.exports = {
                 com.symbol.toLowerCase() === req.body.commodity.toLowerCase()
             )
 
+          const freq = parseInt(req.body.freq)
           const message = `Alert created successfully: ${
             commodity ? commodity.name : req.body.commodity
           } ${req.body.type} ${req.body.trigger === 'above' ? '>' : '<'} ${
@@ -54,6 +57,10 @@ module.exports = {
             req.body.pad === 'l'
               ? 'Large landing pad only'
               : 'Any landing pad size'
+          }. Will send alerts ${
+            freq === 0
+              ? 'as they happen'
+              : `at most every ${freq / 1000} seconds`
           }.
 
 Click here to delete: https://edalerts.app/delete/${newAlert._id}`

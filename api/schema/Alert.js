@@ -15,6 +15,8 @@ const Alert = new mongoose.Schema({
   minSupply: Number,
   minDemand: Number,
   pad: String,
+  freq: Number,
+  lastSent: Number,
   created: Number,
 })
 
