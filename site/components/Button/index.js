@@ -56,8 +56,8 @@ const StyledButton = styled.button(
     variant({
       variants: {
         secondary: {
-          bg: 'white',
-          color: 'black',
+          bg: 'black',
+          color: 'white',
         },
         small: {
           px: 2,

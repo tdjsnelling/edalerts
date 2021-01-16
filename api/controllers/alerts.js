@@ -97,6 +97,14 @@ Click here to delete: https://edalerts.app/delete/${newAlert._id}`
       res.status(500).send(err.message)
     }
   },
+  getByWebhook: async (req, res) => {
+    try {
+      const alerts = await Alert.find({ webhook: req.params.webhook })
+      res.send(alerts || [])
+    } catch (err) {
+      res.status(500).send(err.message)
+    }
+  },
   delete: async (req, res) => {
     try {
       const del = await Alert.deleteOne({ _id: req.params.id })

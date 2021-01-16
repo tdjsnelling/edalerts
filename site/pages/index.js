@@ -1,7 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
+import { useRouter } from 'next/router'
 import { Flex, Box, Heading, Text } from 'rebass/styled-components'
 import GA from 'react-ga'
+import styled from 'styled-components'
+import css from '@styled-system/css'
 import { createGlobalStyle } from 'styled-components'
 import { HelpCircle } from '@styled-icons/boxicons-regular'
 import Layout from '../components/Layout'
@@ -12,11 +15,41 @@ import Select from '../components/Select'
 import commodities from '../commodities.json'
 import rarecommodities from '../rarecommodities.json'
 
+export const intervalOptions = {
+  0: 'as they happen',
+  10000: 'at most every 10 seconds',
+  30000: 'at most every 30 seconds',
+  60000: 'at most every 1 minute',
+  120000: 'at most every 2 minutes',
+  300000: 'at most every 5 minutes',
+}
+
 const RecaptchaStyle = createGlobalStyle`
   .grecaptcha-badge {
     display: none;
   }
 `
+
+const Divider = styled(Text)(() =>
+  css({
+    overflow: 'hidden',
+    position: 'relative',
+    '&::before, &::after': {
+      content: '""',
+      height: '1px',
+      width: ['40%', '45%'],
+      bg: 'grey',
+      position: 'absolute',
+      top: '50%',
+    },
+    '&::before': {
+      left: 0,
+    },
+    '&::after': {
+      right: 0,
+    },
+  })
+)
 
 const Index = () => {
   const [backendOk, setBackendOk] = useState(true)
@@ -24,6 +57,7 @@ const Index = () => {
   const [error, setError] = useState(null)
   const [showHelp, setShowHelp] = useState(false)
   const [alertType, setAlertType] = useState('sell')
+  const router = useRouter()
 
   useEffect(() => {
     const getBackendStatus = async () => {
@@ -94,6 +128,13 @@ const Index = () => {
       setSuccess(false)
       setError(err.message)
     }
+  }
+
+  const handleManage = (e) => {
+    e.preventDefault()
+    const form = new FormData(e.target)
+    const webhook = form.get('webhook')
+    router.push(`/manage/${encodeURIComponent(webhook)}`)
   }
 
   const sortName = (a, b) => {
@@ -252,15 +293,29 @@ const Index = () => {
                 </Text>
               )}
               <Select name="freq" mb={3} required>
-                <option value="0">as they happen</option>
-                <option value="10000">at most every 10 seconds</option>
-                <option value="30000">at most every 30 seconds</option>
-                <option value="60000">at most every 1 minute</option>
-                <option value="120000">at most every 2 minutes</option>
-                <option value="300000">at most every 5 minutes</option>
+                {Object.entries(intervalOptions).map(([time, text]) => (
+                  <option key={time} value={time}>
+                    {text}
+                  </option>
+                ))}
               </Select>
               <Button width={1}>Create alert</Button>
             </form>
+            <Box>
+              <Divider color="grey" fontSize={3} textAlign="center" my={4}>
+                OR
+              </Divider>
+              <form onSubmit={handleManage}>
+                <Input
+                  type="text"
+                  name="webhook"
+                  placeholder="discord webhook url"
+                  required
+                  mb={2}
+                />
+                <Button width={1}>Manage your alerts</Button>
+              </form>
+            </Box>
             {error && (
               <Text as="p" mt={3} fontSize={[2, 3]} color="error">
                 error: {error}
@@ -288,7 +343,7 @@ const Index = () => {
           href="mailto:contact@edalerts.app"
           color="grey"
           display="inline-block"
-          mt={3}
+          mt={4}
         >
           contact@edalerts.app
         </Text>
