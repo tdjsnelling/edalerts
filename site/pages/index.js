@@ -358,6 +358,12 @@ const Index = () => {
         >
           contact@edalerts.app
         </Text>
+        <Text color="grey" fontSize={0} mt={2}>
+          if you make good use of ED Alerts, please consider donating! it
+          doesn’t cost a huge amount to run but it does come out of my own
+          pocket. any amount is greatly appreciated, get in touch via email for
+          details.
+        </Text>
       </Layout>
     </>
   )
