@@ -117,4 +117,12 @@ Click here to delete: https://edalerts.app/delete/${newAlert._id}`
       res.status(500).send(err.message)
     }
   },
+  count: async (req, res) => {
+    try {
+      const alertCount = await Alert.countDocuments({})
+      res.send({ count: alertCount })
+    } catch (err) {
+      res.status(500).send(err.message)
+    }
+  },
 }

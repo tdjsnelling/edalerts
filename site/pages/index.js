@@ -57,6 +57,7 @@ const Index = () => {
   const [error, setError] = useState(null)
   const [showHelp, setShowHelp] = useState(false)
   const [alertType, setAlertType] = useState('sell')
+  const [count, setCount] = useState('?')
   const router = useRouter()
 
   useEffect(() => {
@@ -73,9 +74,16 @@ const Index = () => {
       }
     }
 
+    const getAlertCount = async () => {
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/count`)
+      const { count } = await res.json()
+      if (!isNaN(count)) setCount(count)
+    }
+
     GA.initialize('UA-87488863-7')
     GA.pageview(window.location.pathname + window.location.search)
     getBackendStatus()
+    getAlertCount()
   }, [])
 
   const handleSubmit = async (e) => {
@@ -162,13 +170,16 @@ const Index = () => {
             mt="1px"
             sx={{ borderRadius: '50%' }}
           />
-          <Text
-            as="a"
-            href="https://status.edalerts.app"
-            color="grey"
-            lineHeight={1}
-          >
-            market listener {backendOk ? '' : 'not'} running
+          <Text color="grey">
+            <Text
+              as="a"
+              href="https://status.edalerts.app"
+              color="grey"
+              lineHeight={1}
+            >
+              market listener {backendOk ? '' : 'not'} running
+            </Text>{' '}
+            &bull; monitoring {count} alerts
           </Text>
         </Flex>
         <Text as="p" fontSize={[2, 3]} mb={2} color="grey">

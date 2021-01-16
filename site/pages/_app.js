@@ -49,7 +49,7 @@ const GlobalStyle = createGlobalStyle(
 const NockHost = ({ Component, pageProps }) => (
   <>
     <Head>
-      <title>ED Alerts — Elite: Dangerous commodity market alerts</title>
+      <title>ED Alerts — Elite Dangerous commodity market alerts</title>
       <meta
         property="og:title"
         content="ED Alerts — Elite Dangerous commodity market alerts"
