@@ -364,6 +364,18 @@ const Index = () => {
           pocket. any amount is greatly appreciated, get in touch via email for
           details.
         </Text>
+        <Box mt={1}>
+          <Text
+            as="a"
+            href="https://tdjs.tech"
+            target="_blank"
+            rel="noopener noreferrer"
+            color="grey"
+            fontSize={0}
+          >
+            tdjs.tech
+          </Text>
+        </Box>
       </Layout>
     </>
   )
