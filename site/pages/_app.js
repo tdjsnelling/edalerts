@@ -73,6 +73,12 @@ const NockHost = ({ Component, pageProps }) => (
         rel="stylesheet"
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
       />
+      <script
+        async
+        defer
+        data-domain="edalerts.app"
+        src="https://analytics.tdjs.tech/js/plausible.js"
+      />
     </Head>
     <ThemeProvider theme={theme}>
       <GlobalStyle />
