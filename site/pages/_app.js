@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import Head from 'next/head'
 import { ThemeProvider, createGlobalStyle } from 'styled-components'
 
@@ -46,45 +46,55 @@ const GlobalStyle = createGlobalStyle(
 `
 )
 
-const NockHost = ({ Component, pageProps }) => (
-  <>
-    <Head>
-      <title>ED Alerts — Elite Dangerous commodity market alerts</title>
-      <meta
-        property="og:title"
-        content="ED Alerts — Elite Dangerous commodity market alerts"
-      />
-      <meta
-        name="description"
-        content="create Elite Dangerous commodity market alerts. get notified when a specific commodity buys or sells above or below a certain value."
-      />
-      <meta
-        property="og:description"
-        content="create Elite Dangerous commodity market alerts. get notified when a specific commodity buys or sells above or below a certain value."
-      />
-      <meta
-        property="og:site_name"
-        content="ED Alerts — Elite Dangerous commodity market alerts"
-      />
-      <meta property="og:type" content="website" />
-      <meta property="og:url" content="https://edalerts.app" />
-      <link rel="icon" href="favicon.png" type="image/png" />
-      <link
-        rel="stylesheet"
-        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
-      />
-      <script
-        async
-        defer
-        data-domain="edalerts.app"
-        src="https://analytics.tdjs.tech/js/plausible.js"
-      />
-    </Head>
-    <ThemeProvider theme={theme}>
-      <GlobalStyle />
-      <Component {...pageProps} />
-    </ThemeProvider>
-  </>
-)
+const EDAlerts = ({ Component, pageProps }) => {
+  useEffect(() => {
+    window.plausible =
+      window.plausible ||
+      function () {
+        ;(window.plausible.q = window.plausible.q || []).push(arguments)
+      }
+  }, [])
 
-export default NockHost
+  return (
+    <>
+      <Head>
+        <title>ED Alerts — Elite Dangerous commodity market alerts</title>
+        <meta
+          property="og:title"
+          content="ED Alerts — Elite Dangerous commodity market alerts"
+        />
+        <meta
+          name="description"
+          content="create Elite Dangerous commodity market alerts. get notified when a specific commodity buys or sells above or below a certain value."
+        />
+        <meta
+          property="og:description"
+          content="create Elite Dangerous commodity market alerts. get notified when a specific commodity buys or sells above or below a certain value."
+        />
+        <meta
+          property="og:site_name"
+          content="ED Alerts — Elite Dangerous commodity market alerts"
+        />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://edalerts.app" />
+        <link rel="icon" href="favicon.png" type="image/png" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+        />
+        <script
+          async
+          defer
+          data-domain="edalerts.app"
+          src="https://analytics.tdjs.tech/js/plausible.js"
+        />
+      </Head>
+      <ThemeProvider theme={theme}>
+        <GlobalStyle />
+        <Component {...pageProps} />
+      </ThemeProvider>
+    </>
+  )
+}
+
+export default EDAlerts

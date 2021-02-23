@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Flex, Box, Heading, Text } from 'rebass/styled-components'
-import GA from 'react-ga'
 import styled from 'styled-components'
 import css from '@styled-system/css'
 import { createGlobalStyle } from 'styled-components'
@@ -80,8 +79,6 @@ const Index = () => {
       if (!isNaN(count)) setCount(count)
     }
 
-    GA.initialize('UA-87488863-7')
-    GA.pageview(window.location.pathname + window.location.search)
     getBackendStatus()
     getAlertCount()
   }, [])
@@ -121,13 +118,9 @@ const Index = () => {
       })
 
       if (res.ok) {
+        plausible('Create')
         setSuccess(true)
         setError(null)
-
-        GA.event({
-          category: 'Alert',
-          action: 'Created',
-        })
       } else {
         setSuccess(false)
         setError(`${res.status} ${res.statusText}`)

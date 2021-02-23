@@ -40,20 +40,6 @@ const getCommodityName = (symbol) => {
 
 const Manage = ({ alerts }) => {
   const [deleted, setDeleted] = useState([])
-
-  const handleDelete = async (id) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/alert/${id}`, {
-      method: 'delete',
-    })
-    if (res.status === 200) {
-      const curr = [...deleted]
-      curr.push(id)
-      setDeleted(curr)
-    } else {
-      alert(`Error ${res.status}. Alert could not be deleted.`)
-    }
-  }
-
   const filteredAlerts = alerts.filter((alert) => !deleted.includes(alert._id))
 
   return (
@@ -99,9 +85,13 @@ const Manage = ({ alerts }) => {
                     Created {moment(alert.created).fromNow()}
                   </Text>
                 </Box>
-                <Button ml={3} onClick={() => handleDelete(alert._id)}>
-                  <Trash size={24} />
-                </Button>
+                <Link href={`/delete/${alert._id}`}>
+                  <a>
+                    <Button ml={3}>
+                      <Trash size={24} />
+                    </Button>
+                  </a>
+                </Link>
               </Flex>
             </li>
           ))}
