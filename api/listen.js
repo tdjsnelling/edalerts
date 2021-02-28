@@ -37,60 +37,64 @@ const sendAlert = async ({
     commodity ? commodity.name : commodityName
   } ${type} ${trigger === 'above' ? '>' : '<'} ${alertValue}`
 
-  await request({
-    uri: webhookUrl,
-    method: 'post',
-    json: {
-      username: 'ED Alerts',
-      avatar_url: 'https://edalerts.app/favicon.png',
-      embeds: [
-        {
-          title: title,
-          color: 16284416,
-          timestamp: new Date().toISOString(),
-          author: {
-            name: 'ED Alerts',
-            url: 'https://edalerts.app',
+  try {
+    await request({
+      uri: webhookUrl,
+      method: 'post',
+      json: {
+        username: 'ED Alerts',
+        avatar_url: 'https://edalerts.app/favicon.png',
+        embeds: [
+          {
+            title: title,
+            color: 16284416,
+            timestamp: new Date().toISOString(),
+            author: {
+              name: 'ED Alerts',
+              url: 'https://edalerts.app',
+            },
+            fields: [
+              {
+                name: 'Value',
+                value: value,
+                inline: false,
+              },
+              {
+                name: 'Location',
+                value: `${station}, ${system}`,
+                inline: false,
+              },
+              {
+                name: 'Max. pad size',
+                value: maxPadSize,
+                inline: true,
+              },
+              {
+                name: 'Supply',
+                value: supply,
+                inline: true,
+              },
+              {
+                name: 'Demand',
+                value: demand,
+                inline: true,
+              },
+              {
+                name: 'Delete this alert',
+                value: `https://edalerts.app/delete/${alertId}`,
+                inline: false,
+              },
+            ],
+            footer: {
+              text: 'ED Alerts',
+            },
           },
-          fields: [
-            {
-              name: 'Value',
-              value: value,
-              inline: false,
-            },
-            {
-              name: 'Location',
-              value: `${station}, ${system}`,
-              inline: false,
-            },
-            {
-              name: 'Max. pad size',
-              value: maxPadSize,
-              inline: true,
-            },
-            {
-              name: 'Supply',
-              value: supply,
-              inline: true,
-            },
-            {
-              name: 'Demand',
-              value: demand,
-              inline: true,
-            },
-            {
-              name: 'Delete this alert',
-              value: `https://edalerts.app/delete/${alertId}`,
-              inline: false,
-            },
-          ],
-          footer: {
-            text: 'ED Alerts',
-          },
-        },
-      ],
-    },
-  })
+        ],
+      },
+    })
+  } catch (e) {
+    console.error('webhook request failed')
+  }
 }
 
 sock.connect('tcp://eddn.edcd.io:9500')
