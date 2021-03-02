@@ -5,6 +5,11 @@ const cors = require('cors')
 const morgan = require('morgan')
 const chalk = require('chalk')
 
+const os = require('os')
+console.log(os.cpus())
+console.log(os.totalmem())
+console.log(os.freemem())
+
 const alertRoutes = require('./routes/alerts')
 
 require('./listen')
