@@ -7,8 +7,10 @@ const chalk = require('chalk')
 
 const os = require('os')
 console.log(os.cpus())
-console.log(os.totalmem())
-console.log(os.freemem())
+setInterval(() => {
+  console.log('total: ' + os.totalmem())
+  console.log('free: ' + os.freemem())
+}, 100)
 
 const alertRoutes = require('./routes/alerts')
 
