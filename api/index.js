@@ -10,6 +10,7 @@ const alertRoutes = require('./routes/alerts')
 require('./listen')
 
 const colorizeStatus = (status) => {
+  if (!status) return '?'
   if (status.startsWith('2')) {
     return chalk.green(status)
   } else if (status.startsWith('4') || status.startsWith('5')) {

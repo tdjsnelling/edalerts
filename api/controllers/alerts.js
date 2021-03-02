@@ -1,7 +1,7 @@
 const request = require('request-promise')
 const Alert = require('../schema/Alert')
-const commodities = require('../../site/commodities.json')
-const rareCommodities = require('../../site/rarecommodities.json')
+const commodities = require('../commodities.json')
+const rareCommodities = require('../rarecommodities.json')
 
 module.exports = {
   create: async (req, res) => {

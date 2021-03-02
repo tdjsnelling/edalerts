@@ -4,8 +4,8 @@ const sock = zmq.socket('sub')
 const request = require('request-promise')
 const Alert = require('./schema/Alert')
 const stations = require('./stations.json')
-const commodityData = require('../site/commodities.json')
-const rareCommodityData = require('../site/rarecommodities.json')
+const commodityData = require('./commodities.json')
+const rareCommodityData = require('./rarecommodities.json')
 
 const sendAlert = async ({
   alertId,
