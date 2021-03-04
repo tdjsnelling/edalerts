@@ -16,7 +16,7 @@
     "morgan": "^1.10.0",
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
-    "zeromq": "5",
+    "zeromq": "6.0.0-beta.5",
     "zlib": "^1.0.5"
   },
   "devDependencies": {
