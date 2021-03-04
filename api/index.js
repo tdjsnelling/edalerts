@@ -5,13 +5,6 @@ const cors = require('cors')
 const morgan = require('morgan')
 const chalk = require('chalk')
 
-const os = require('os')
-console.log(os.cpus())
-setInterval(() => {
-  console.log('total: ' + os.totalmem())
-  console.log('free: ' + os.freemem())
-}, 100)
-
 const alertRoutes = require('./routes/alerts')
 
 require('./listen')
