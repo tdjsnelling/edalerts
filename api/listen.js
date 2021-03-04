@@ -128,9 +128,10 @@ const sendAlert = async ({
       const planetary = station ? station.is_planetary : false
       const stationType = station ? station.type : 'unknown'
       const maxPadSize = station ? station.max_landing_pad_size : 'unknown'
-      const distance = station
-        ? `${station.distance_to_star.toLocaleString()} Ls`
-        : 'unknown'
+      const distance =
+        station && station.distance_to_star
+          ? `${station.distance_to_star.toLocaleString()} Ls`
+          : 'unknown'
 
       const commodities = inflated.message.commodities
       commodities.forEach(async (commodity) => {
