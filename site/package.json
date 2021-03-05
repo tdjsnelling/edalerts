@@ -11,7 +11,6 @@
     "@styled-icons/boxicons-regular": "^10.6.0",
     "@styled-system/css": "^5.1.5",
     "@svgr/webpack": "^5.4.0",
-    "email-validator": "^2.0.4",
     "moment": "^2.29.1",
     "next": "^10.0.0",
     "react": "16.13.1",

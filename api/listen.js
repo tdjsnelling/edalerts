@@ -107,7 +107,16 @@ const sendAlert = async ({
       },
     })
   } catch (e) {
-    console.error(`webhook failed for alert ${alertId}`)
+    const {
+      error: { message },
+    } = e
+
+    if (message === 'Unknown Webhook') {
+      await Alert.deleteOne({ _id: alertId })
+      console.log(`deleted alert ${alertId} due to removed webhook`)
+    } else {
+      console.error(`webhook failed for alert ${alertId}: ${message}`)
+    }
   }
 }
 
