@@ -58,6 +58,7 @@ const Index = () => {
   const [alertType, setAlertType] = useState('sell')
   const [count, setCount] = useState('?')
   const [showLimitWarning, setShowLimitWarning] = useState(false)
+  const [loading, setLoading] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -85,6 +86,7 @@ const Index = () => {
   }, [])
 
   const handleSubmit = async (e) => {
+    setLoading(true)
     e.preventDefault()
     setSuccess(false)
     setError(false)
@@ -122,13 +124,16 @@ const Index = () => {
         plausible('Create')
         setSuccess(true)
         setError(null)
+        setLoading(false)
       } else {
         setSuccess(false)
         setError(`${res.status} ${res.statusText}`)
+        setLoading(false)
       }
     } catch (err) {
       setSuccess(false)
       setError(err.message)
+      setLoading(false)
     }
   }
 
@@ -327,7 +332,9 @@ const Index = () => {
                   </Text>
                 )}
               </Box>
-              <Button width={1}>Create alert</Button>
+              <Button width={1} loading={loading}>
+                Create alert
+              </Button>
             </form>
             <Box>
               <Divider color="grey" fontSize={3} textAlign="center" my={4}>

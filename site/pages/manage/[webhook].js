@@ -13,7 +13,7 @@ import rarecommodities from '../../rarecommodities.json'
 
 import { intervalOptions } from '../index'
 
-const HomeLink = styled.a(() =>
+export const HomeLink = styled.a(() =>
   css({
     color: 'grey',
     textDecoration: 'none',

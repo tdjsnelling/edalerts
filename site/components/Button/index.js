@@ -1,6 +1,6 @@
 import React from 'react'
 import Link from 'next/link'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import {
   space,
   layout,
@@ -12,6 +12,20 @@ import {
   position,
 } from 'styled-system'
 import css from '@styled-system/css'
+import { Loader } from '@styled-icons/boxicons-regular'
+
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`
+
+const Loading = styled(Loader)`
+  animation: ${spin} 2s linear infinite;
+`
 
 const StyledButton = styled.button(
   space,
@@ -67,7 +81,7 @@ const StyledButton = styled.button(
     })
 )
 
-const Button = ({ children, href, ...props }) =>
+const Button = ({ children, href, loading, ...props }) =>
   href ? (
     <>
       {href.startsWith('http') ? (
@@ -83,7 +97,9 @@ const Button = ({ children, href, ...props }) =>
       )}
     </>
   ) : (
-    <StyledButton {...props}>{children}</StyledButton>
+    <StyledButton {...props}>
+      {loading ? <Loading size={20} /> : children}
+    </StyledButton>
   )
 
 export default Button

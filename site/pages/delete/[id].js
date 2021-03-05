@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { useRouter } from 'next/router'
 import { Heading, Text } from 'rebass/styled-components'
 import Layout from '../../components/Layout'
+import { HomeLink } from '../manage/[webhook]'
 
 const Index = () => {
   const [success, setSuccess] = useState(false)
@@ -42,6 +44,9 @@ const Index = () => {
 
   return (
     <Layout>
+      <Link href="/" passHref>
+        <HomeLink>&larr; home</HomeLink>
+      </Link>
       <Heading as="h1" fontSize={[5, 7]} mb={2}>
         ED Alerts
       </Heading>
