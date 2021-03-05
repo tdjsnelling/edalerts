@@ -57,6 +57,7 @@ const Index = () => {
   const [showHelp, setShowHelp] = useState(false)
   const [alertType, setAlertType] = useState('sell')
   const [count, setCount] = useState('?')
+  const [showLimitWarning, setShowLimitWarning] = useState(false)
   const router = useRouter()
 
   useEffect(() => {
@@ -266,43 +267,66 @@ const Index = () => {
                   <option value="l">large pad required</option>
                 </Select>
               </Box>
-              <Flex alignItems="center" mb={showHelp ? 1 : 2}>
-                <Input
-                  type="url"
-                  name="webhook"
-                  placeholder="discord webhook url"
-                  mr={1}
-                  required
-                />
-                <Box
-                  color={showHelp ? 'primary' : 'grey'}
-                  onClick={() => setShowHelp(!showHelp)}
-                  css={{ cursor: 'pointer' }}
-                >
-                  <HelpCircle size={32} />
-                </Box>
-              </Flex>
-              {showHelp && (
-                <Text color="grey" mb={2}>
-                  ED Alerts sends notifications via{' '}
-                  <Text as="a" href="https://discord.com" color="grey">
-                    Discord
+              <Box mb={2}>
+                <Flex alignItems="center">
+                  <Input
+                    type="url"
+                    name="webhook"
+                    placeholder="discord webhook url"
+                    mr={1}
+                    required
+                  />
+                  <Box
+                    color={showHelp ? 'primary' : 'grey'}
+                    onClick={() => setShowHelp(!showHelp)}
+                    css={{ cursor: 'pointer' }}
+                  >
+                    <HelpCircle size={32} />
+                  </Box>
+                </Flex>
+                {showHelp && (
+                  <Text color="grey" mt={1}>
+                    ED Alerts sends notifications via{' '}
+                    <Text as="a" href="https://discord.com" color="grey">
+                      Discord
+                    </Text>
+                    . to create a webhook, you first need a Discord server -
+                    this could be an existing one you have suitable permissions
+                    in or you can create one for free. next, edit the settings
+                    of a text channel, select ‘integrations’ and then
+                    ‘webhooks’. create a new webhook, and copy the url here.
+                    don’t worry about the name and avatar, as these will be
+                    overwritten by ED Alerts.
                   </Text>
-                  . to create a webhook, you first need a Discord server - this
-                  could be an existing one you have suitable permissions in or
-                  you can create one for free. next, edit the settings of a text
-                  channel, select ‘integrations’ and then ‘webhooks’. create a
-                  new webhook, and copy the url here. don’t worry about the name
-                  and avatar, as these will be overwritten by ED Alerts.
-                </Text>
-              )}
-              <Select name="freq" mb={3} required>
-                {Object.entries(intervalOptions).map(([time, text]) => (
-                  <option key={time} value={time}>
-                    {text}
-                  </option>
-                ))}
-              </Select>
+                )}
+              </Box>
+              <Box mb={3}>
+                <Select
+                  name="freq"
+                  defaultValue={10000}
+                  onChange={(e) => {
+                    if (e.target.value === '0') setShowLimitWarning(true)
+                    else setShowLimitWarning(false)
+                  }}
+                  required
+                >
+                  {Object.entries(intervalOptions).map(([time, text]) => (
+                    <option key={time} value={time}>
+                      {text}
+                    </option>
+                  ))}
+                </Select>
+                {showLimitWarning && (
+                  <Text color="grey" mt={1}>
+                    if your alert is triggered too frequently Discord may start
+                    rate limiting your webhook, causing all alerts to be
+                    undelivered. this risk even is higher if you use the same
+                    webhook for multiple alerts — if you need as-they-happen
+                    alerts, it is recommended that you use a separate webhook
+                    for each.
+                  </Text>
+                )}
+              </Box>
               <Button width={1}>Create alert</Button>
             </form>
             <Box>

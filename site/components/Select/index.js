@@ -65,7 +65,14 @@ const StyledSelect = styled.select(
 const Select = ({ children, ...props }) => (
   <Wrapper>
     <StyledSelect {...props}>{children}</StyledSelect>
-    <Box sx={{ position: 'absolute', right: '15px', top: '13px' }}>
+    <Box
+      sx={{
+        position: 'absolute',
+        right: '15px',
+        top: '13px',
+        pointerEvents: 'none',
+      }}
+    >
       <ChevronDown size={24} />
     </Box>
   </Wrapper>
