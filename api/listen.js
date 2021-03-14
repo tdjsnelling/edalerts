@@ -106,6 +106,7 @@ const sendAlert = async ({
         ],
       },
     })
+    console.log(`sent alert ${alertId} successfully`)
   } catch (e) {
     const {
       error: { message },
@@ -135,7 +136,14 @@ const sendAlert = async ({
         (st) => st.name === inflated.message.stationName
       )
       const planetary = station ? station.is_planetary : false
-      const stationType = station ? station.type : 'unknown'
+      const fleetCarrier = /^[a-z0-9]{3}-[a-z0-9]{3}$/i.test(
+        inflated.message.stationName
+      )
+      const stationType = fleetCarrier
+        ? 'Fleet Carrier'
+        : station
+        ? station.type
+        : 'unknown'
       const maxPadSize = station ? station.max_landing_pad_size : 'unknown'
       const distance =
         station && station.distance_to_star
@@ -143,9 +151,9 @@ const sendAlert = async ({
           : 'unknown'
 
       const commodities = inflated.message.commodities
-      commodities.forEach(async (commodity) => {
+      for (const commodity of commodities) {
         const alerts = await Alert.find({ commodity: commodity.name })
-        alerts.forEach((alert) => {
+        for (const alert of alerts) {
           if (
             alert.freq === 0 ||
             (alert.freq > 0 && Date.now() > alert.lastSent + alert.freq)
@@ -156,110 +164,115 @@ const sendAlert = async ({
               maxPadSize === 'unknown'
             ) {
               if (
-                alert.type === 'buy' &&
-                commodity.buyPrice !== 0 &&
-                commodity.stock > alert.minSupply
+                ((planetary && alert.includePlanetary) || !planetary) &&
+                ((fleetCarrier && alert.includeFleetCarrier) || !fleetCarrier)
               ) {
                 if (
-                  alert.trigger === 'above' &&
-                  commodity.buyPrice > alert.value
+                  alert.type === 'buy' &&
+                  commodity.buyPrice !== 0 &&
+                  commodity.stock > alert.minSupply
                 ) {
-                  sendAlert({
-                    alertId: alert._id,
-                    alertValue: alert.value,
-                    commodityName: commodity.name,
-                    type: 'buy',
-                    trigger: 'above',
-                    value: commodity.buyPrice,
-                    station: inflated.message.stationName,
-                    system: inflated.message.systemName,
-                    demand: commodity.demand,
-                    supply: commodity.stock,
-                    maxPadSize,
-                    stationType,
-                    distance,
-                    planetary,
-                    webhookUrl: alert.webhook,
-                    freq: alert.freq,
-                  })
+                  if (
+                    alert.trigger === 'above' &&
+                    commodity.buyPrice > alert.value
+                  ) {
+                    await sendAlert({
+                      alertId: alert._id,
+                      alertValue: alert.value,
+                      commodityName: commodity.name,
+                      type: 'buy',
+                      trigger: 'above',
+                      value: commodity.buyPrice,
+                      station: inflated.message.stationName,
+                      system: inflated.message.systemName,
+                      demand: commodity.demand,
+                      supply: commodity.stock,
+                      maxPadSize,
+                      stationType,
+                      distance,
+                      planetary,
+                      webhookUrl: alert.webhook,
+                      freq: alert.freq,
+                    })
+                  } else if (
+                    alert.trigger === 'below' &&
+                    commodity.buyPrice < alert.value
+                  ) {
+                    await sendAlert({
+                      alertId: alert._id,
+                      alertValue: alert.value,
+                      commodityName: commodity.name,
+                      type: 'buy',
+                      trigger: 'below',
+                      value: commodity.buyPrice,
+                      station: inflated.message.stationName,
+                      system: inflated.message.systemName,
+                      demand: commodity.demand,
+                      supply: commodity.stock,
+                      maxPadSize,
+                      stationType,
+                      distance,
+                      planetary,
+                      webhookUrl: alert.webhook,
+                      freq: alert.freq,
+                    })
+                  }
                 } else if (
-                  alert.trigger === 'below' &&
-                  commodity.buyPrice < alert.value
+                  alert.type === 'sell' &&
+                  commodity.sellPrice !== 0 &&
+                  commodity.demand > alert.minDemand
                 ) {
-                  sendAlert({
-                    alertId: alert._id,
-                    alertValue: alert.value,
-                    commodityName: commodity.name,
-                    type: 'buy',
-                    trigger: 'below',
-                    value: commodity.buyPrice,
-                    station: inflated.message.stationName,
-                    system: inflated.message.systemName,
-                    demand: commodity.demand,
-                    supply: commodity.stock,
-                    maxPadSize,
-                    stationType,
-                    distance,
-                    planetary,
-                    webhookUrl: alert.webhook,
-                    freq: alert.freq,
-                  })
-                }
-              } else if (
-                alert.type === 'sell' &&
-                commodity.sellPrice !== 0 &&
-                commodity.demand > alert.minDemand
-              ) {
-                if (
-                  alert.trigger === 'above' &&
-                  commodity.sellPrice > alert.value
-                ) {
-                  sendAlert({
-                    alertId: alert._id,
-                    alertValue: alert.value,
-                    commodityName: commodity.name,
-                    type: 'sell',
-                    trigger: 'above',
-                    value: commodity.sellPrice,
-                    station: inflated.message.stationName,
-                    system: inflated.message.systemName,
-                    demand: commodity.demand,
-                    supply: commodity.stock,
-                    maxPadSize,
-                    stationType,
-                    distance,
-                    planetary,
-                    webhookUrl: alert.webhook,
-                    freq: alert.freq,
-                  })
-                } else if (
-                  alert.trigger === 'below' &&
-                  commodity.sellPrice < alert.value
-                ) {
-                  sendAlert({
-                    alertId: alert._id,
-                    alertValue: alert.value,
-                    commodityName: commodity.name,
-                    type: 'sell',
-                    trigger: 'below',
-                    value: commodity.sellPrice,
-                    station: inflated.message.stationName,
-                    system: inflated.message.systemName,
-                    demand: commodity.demand,
-                    supply: commodity.stock,
-                    maxPadSize,
-                    stationType,
-                    distance,
-                    planetary,
-                    webhookUrl: alert.webhook,
-                    freq: alert.freq,
-                  })
+                  if (
+                    alert.trigger === 'above' &&
+                    commodity.sellPrice > alert.value
+                  ) {
+                    await sendAlert({
+                      alertId: alert._id,
+                      alertValue: alert.value,
+                      commodityName: commodity.name,
+                      type: 'sell',
+                      trigger: 'above',
+                      value: commodity.sellPrice,
+                      station: inflated.message.stationName,
+                      system: inflated.message.systemName,
+                      demand: commodity.demand,
+                      supply: commodity.stock,
+                      maxPadSize,
+                      stationType,
+                      distance,
+                      planetary,
+                      webhookUrl: alert.webhook,
+                      freq: alert.freq,
+                    })
+                  } else if (
+                    alert.trigger === 'below' &&
+                    commodity.sellPrice < alert.value
+                  ) {
+                    await sendAlert({
+                      alertId: alert._id,
+                      alertValue: alert.value,
+                      commodityName: commodity.name,
+                      type: 'sell',
+                      trigger: 'below',
+                      value: commodity.sellPrice,
+                      station: inflated.message.stationName,
+                      system: inflated.message.systemName,
+                      demand: commodity.demand,
+                      supply: commodity.stock,
+                      maxPadSize,
+                      stationType,
+                      distance,
+                      planetary,
+                      webhookUrl: alert.webhook,
+                      freq: alert.freq,
+                    })
+                  }
                 }
               }
             }
           }
-        })
-      })
+        }
+      }
     }
   }
 })()
