@@ -6,6 +6,7 @@ const morgan = require('morgan')
 const chalk = require('chalk')
 
 const alertRoutes = require('./routes/alerts')
+const triggerRoutes = require('./routes/triggers')
 
 require('./listen')
 
@@ -36,6 +37,7 @@ app.use(bodyParser.json())
 app.use(cors())
 
 app.use(alertRoutes)
+app.use(triggerRoutes)
 
 app.get('', (req, res) => {
   res.sendStatus(200)

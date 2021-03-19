@@ -107,3 +107,5 @@ dist
 api/stations.json
 
 .idea
+
+.DS_Store

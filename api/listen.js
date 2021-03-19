@@ -2,6 +2,7 @@ const zlib = require('zlib')
 const zmq = require('zeromq')
 const request = require('request-promise')
 const Alert = require('./schema/Alert')
+const Trigger = require('./schema/Trigger')
 const stations = require('./stations.json')
 const commodityData = require('./commodities.json')
 const rareCommodityData = require('./rarecommodities.json')
@@ -106,6 +107,13 @@ const sendAlert = async ({
         ],
       },
     })
+
+    const newTrigger = new Trigger({
+      alert: alertId,
+      timestamp: Date.now(),
+    })
+    await newTrigger.save()
+
     console.log(`sent alert ${alertId} successfully`)
   } catch (e) {
     const {
