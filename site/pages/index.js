@@ -10,6 +10,7 @@ import Layout from '../components/Layout'
 import Button from '../components/Button'
 import Input from '../components/Input'
 import Select from '../components/Select'
+import Checkbox from '../components/Checkbox'
 
 import commodities from '../commodities.json'
 import rarecommodities from '../rarecommodities.json'
@@ -114,6 +115,8 @@ const Index = () => {
           minSupply: form.get('minSupply'),
           minDemand: form.get('minDemand'),
           pad: form.get('pad'),
+          includePlanetary: form.get('includePlanetary') === 'on',
+          includeFleetCarrier: form.get('includeFleetCarrier') === 'on',
           webhook: form.get('webhook'),
           freq: form.get('freq'),
           token: token,
@@ -170,15 +173,8 @@ const Index = () => {
             sx={{ borderRadius: '50%' }}
           />
           <Text color="grey">
-            <Text
-              as="a"
-              href="https://status.edalerts.app"
-              color="grey"
-              lineHeight={1}
-            >
-              market listener {backendOk ? '' : 'not'} running
-            </Text>{' '}
-            &bull; monitoring {count} alerts
+            market listener {backendOk ? '' : 'not'} running &bull; monitoring{' '}
+            {count} alerts
           </Text>
         </Flex>
         <Text as="p" fontSize={[2, 3]} mb={2} color="grey">
@@ -271,6 +267,20 @@ const Index = () => {
                   <option value="any">any pad size</option>
                   <option value="l">large pad required</option>
                 </Select>
+              </Box>
+              <Box
+                mb={2}
+                sx={{
+                  display: 'grid',
+                  gridTemplateColumns: ['repeat(1, 1fr)', 'repeat(2, 1fr)'],
+                  gridGap: [2, 1],
+                }}
+              >
+                <Checkbox name="includePlanetary" label="Include planetary" />
+                <Checkbox
+                  name="includeFleetCarrier"
+                  label="Include fleet carriers"
+                />
               </Box>
               <Box mb={2}>
                 <Flex alignItems="center">

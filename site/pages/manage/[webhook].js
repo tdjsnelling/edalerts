@@ -72,6 +72,11 @@ const Manage = ({ alerts }) => {
                       : 'Large pad required'}{' '}
                     &bull; Alerts sent {intervalOptions[alert.freq]}
                   </Text>
+                  <Text color="grey">
+                    {alert.includePlanetary ? 'Include' : 'Exclude'} planetary
+                    &bull; {alert.includeFleetCarrier ? 'Include' : 'Exclude'}{' '}
+                    fleet carriers
+                  </Text>
                   <Text color="grey" fontSize={0}>
                     {alert.freq !== 0 && (
                       <>
@@ -87,7 +92,7 @@ const Manage = ({ alerts }) => {
                 </Box>
                 <Link href={`/delete/${alert._id}`}>
                   <a>
-                    <Button ml={3}>
+                    <Button height="100%" ml={3}>
                       <Trash size={24} />
                     </Button>
                   </a>

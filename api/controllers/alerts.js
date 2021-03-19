@@ -14,6 +14,8 @@ module.exports = {
       ((req.body.type === 'sell' && req.body.minDemand) ||
         (req.body.type === 'buy' && req.body.minSupply)) &&
       req.body.pad &&
+      typeof req.body.includePlanetary === 'boolean' &&
+      typeof req.body.includeFleetCarrier === 'boolean' &&
       req.body.webhook &&
       (req.body.webhook.startsWith('https://discordapp.com/api/webhooks/') ||
         req.body.webhook.startsWith('https://discord.com/api/webhooks/')) &&

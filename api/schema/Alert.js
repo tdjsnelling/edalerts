@@ -18,6 +18,8 @@ const Alert = new mongoose.Schema({
   minSupply: Number,
   minDemand: Number,
   pad: String,
+  includePlanetary: Boolean,
+  includeFleetCarrier: Boolean,
   freq: Number,
   lastSent: Number,
   created: Number,
