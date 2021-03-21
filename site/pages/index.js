@@ -51,40 +51,14 @@ const Divider = styled(Text)(() =>
   })
 )
 
-const Index = () => {
-  const [backendOk, setBackendOk] = useState(true)
+const Index = ({ backendStatus, count, triggerCount }) => {
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
   const [showHelp, setShowHelp] = useState(false)
   const [alertType, setAlertType] = useState('sell')
-  const [count, setCount] = useState('?')
   const [showLimitWarning, setShowLimitWarning] = useState(false)
   const [loading, setLoading] = useState(false)
   const router = useRouter()
-
-  useEffect(() => {
-    const getBackendStatus = async () => {
-      try {
-        const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}`)
-        if (res.ok) {
-          setBackendOk(true)
-        } else {
-          setBackendOk(false)
-        }
-      } catch (err) {
-        setBackendOk(false)
-      }
-    }
-
-    const getAlertCount = async () => {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/count`)
-      const { count } = await res.json()
-      if (!isNaN(count)) setCount(count)
-    }
-
-    getBackendStatus()
-    getAlertCount()
-  }, [])
 
   const handleSubmit = async (e) => {
     setLoading(true)
@@ -165,7 +139,7 @@ const Index = () => {
         </Heading>
         <Flex alignItems="center" mb={3}>
           <Box
-            bg={backendOk ? 'limegreen' : 'red'}
+            bg={backendStatus ? 'limegreen' : 'red'}
             width="8px"
             height="8px"
             mr="8px"
@@ -173,8 +147,9 @@ const Index = () => {
             sx={{ borderRadius: '50%' }}
           />
           <Text color="grey">
-            market listener {backendOk ? '' : 'not'} running &bull; monitoring{' '}
-            {count} alerts
+            market listener {backendStatus ? '' : 'not'} ok &bull; monitoring{' '}
+            {count} alerts &bull; delivered {triggerCount.toLocaleString()}{' '}
+            alerts in the last 24hr
           </Text>
         </Flex>
         <Text as="p" fontSize={[2, 3]} mb={2} color="grey">
@@ -302,7 +277,11 @@ const Index = () => {
                 {showHelp && (
                   <Text color="grey" mt={1}>
                     ED Alerts sends notifications via{' '}
-                    <Text as="a" href="https://discord.com" color="grey">
+                    <Text
+                      as="a"
+                      href="https://support.discord.com/hc/en-us/articles/228383668-Intro-to-Webhooks"
+                      color="grey"
+                    >
                       Discord
                     </Text>
                     . to create a webhook, you first need a Discord server -
@@ -333,12 +312,16 @@ const Index = () => {
                 </Select>
                 {showLimitWarning && (
                   <Text color="grey" mt={1}>
+                    <Text as="span" color="primary">
+                      warning:
+                    </Text>{' '}
                     if your alert is triggered too frequently Discord may start
-                    rate limiting your webhook, causing all alerts to be
-                    undelivered. this risk even is higher if you use the same
-                    webhook for multiple alerts — if you need as-they-happen
-                    alerts, it is recommended that you use a separate webhook
-                    for each.
+                    rate limiting your webhook, causing{' '}
+                    <strong>all alerts to that webhook be undelivered</strong>.
+                    this risk even is higher if you use the same webhook for
+                    multiple alerts — if you need as-they-happen alerts (and you
+                    most likely don’t), it is recommended that you use a
+                    separate webhook for each.
                   </Text>
                 )}
               </Box>
@@ -399,20 +382,43 @@ const Index = () => {
           details.
         </Text>
         <Box mt={1}>
-          <Text
-            as="a"
-            href="https://tdjs.tech"
-            target="_blank"
-            rel="noopener noreferrer"
-            color="grey"
-            fontSize={0}
-          >
-            tdjs.tech
+          <Text color="grey" fontSize={0}>
+            &copy; {new Date().getFullYear()}{' '}
+            <Text
+              as="a"
+              href="https://tdjs.tech"
+              target="_blank"
+              rel="noopener noreferrer"
+              color="grey"
+              fontSize={0}
+            >
+              tdjs.tech
+            </Text>{' '}
+            / CMDR tdjs
           </Text>
         </Box>
       </Layout>
     </>
   )
+}
+
+export const getServerSideProps = async () => {
+  let backendStatus = false
+
+  const statusRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}`)
+  if (statusRes.ok) {
+    backendStatus = true
+  }
+
+  const countRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/count`)
+  const { count } = await countRes.json()
+
+  const triggerCountRes = await fetch(
+    `${process.env.NEXT_PUBLIC_API_BASE}/triggers/count/24h`
+  )
+  const { count: triggerCount } = await triggerCountRes.json()
+
+  return { props: { backendStatus, count, triggerCount } }
 }
 
 export default Index
