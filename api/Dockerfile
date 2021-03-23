@@ -12,5 +12,6 @@ RUN cat stations_large.json | jq '[.[] | {name,max_landing_pad_size,distance_to_
 RUN rm stations_large.json
 
 EXPOSE 3001
+EXPOSE 3002
 
 CMD ["yarn", "start"]
