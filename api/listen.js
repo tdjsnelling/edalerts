@@ -1,11 +1,14 @@
 const zlib = require('zlib')
 const zmq = require('zeromq')
 const request = require('request-promise')
+const WebSocket = require('ws')
 const Alert = require('./schema/Alert')
 const Trigger = require('./schema/Trigger')
 const stations = require('./stations.json')
 const commodityData = require('./commodities.json')
 const rareCommodityData = require('./rarecommodities.json')
+
+const wss = new WebSocket.Server({ port: process.env.WSPORT || 3002 })
 
 const sendAlert = async ({
   alertId,
@@ -41,6 +44,16 @@ const sendAlert = async ({
   } ${alertValue}`
 
   try {
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(
+          `${commodity ? commodity.name : commodityName} ${type} ${
+            trigger === 'above' ? '>' : '<'
+          } ${alertValue} (${station}, ${system})`
+        )
+      }
+    })
+
     await request({
       uri: webhookUrl,
       method: 'post',

@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
+import moment from 'moment'
 import { Flex, Box, Heading, Text } from 'rebass/styled-components'
 import styled from 'styled-components'
 import css from '@styled-system/css'
 import { createGlobalStyle } from 'styled-components'
-import { HelpCircle } from '@styled-icons/boxicons-regular'
+import { Loader, HelpCircle, ErrorCircle } from '@styled-icons/boxicons-regular'
 import Layout from '../components/Layout'
 import Button from '../components/Button'
 import Input from '../components/Input'
@@ -52,13 +53,50 @@ const Divider = styled(Text)(() =>
 )
 
 const Index = ({ backendStatus, count, triggerCount }) => {
+  const [apiData, setApiData] = useState({})
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
   const [showHelp, setShowHelp] = useState(false)
   const [alertType, setAlertType] = useState('sell')
   const [showLimitWarning, setShowLimitWarning] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [liveEvents, setLiveEvents] = useState([])
   const router = useRouter()
+
+  useEffect(() => {
+    ;(async () => {
+      let backendStatus = false
+
+      const statusRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}`)
+      if (statusRes.ok) {
+        backendStatus = true
+      }
+
+      const countRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/count`)
+      const { count } = await countRes.json()
+
+      const triggerCountRes = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}/triggers/count/24h`
+      )
+      const { count: triggerCount } = await triggerCountRes.json()
+
+      setApiData({ backendStatus, count, triggerCount })
+    })()
+
+    const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_BASE)
+    const addEvent = (data) => {
+      setLiveEvents((events) => {
+        let currEvents = [...events]
+        currEvents.push({ ts: new Date(), event: data.data })
+        if (currEvents.length > 5) currEvents = currEvents.slice(-5)
+        return currEvents
+      })
+    }
+    ws.addEventListener('message', addEvent)
+    return () => {
+      ws.removeEventListener('message', addEvent)
+    }
+  }, [])
 
   const handleSubmit = async (e) => {
     setLoading(true)
@@ -137,21 +175,32 @@ const Index = ({ backendStatus, count, triggerCount }) => {
         <Heading as="h1" fontSize={[5, 7]}>
           ED Alerts
         </Heading>
-        <Flex alignItems="center" mb={3}>
-          <Box
-            bg={backendStatus ? 'limegreen' : 'red'}
-            width="8px"
-            height="8px"
-            mr="8px"
-            mt="1px"
-            sx={{ borderRadius: '50%' }}
-          />
-          <Text color="grey">
-            market listener {backendStatus ? '' : 'not'} ok &bull; monitoring{' '}
-            {count} alerts &bull; delivered {triggerCount.toLocaleString()}{' '}
-            alerts in the last 24hr
-          </Text>
-        </Flex>
+        {Object.keys(apiData).length ? (
+          <Flex alignItems="center" mb={3}>
+            <Box
+              bg={apiData.backendStatus ? 'limegreen' : 'red'}
+              width="8px"
+              height="8px"
+              minWidth="8px"
+              minHeight="8px"
+              mr="8px"
+              mt="1px"
+              sx={{ borderRadius: '50%' }}
+            />
+            <Text color="grey">
+              market listener {apiData.backendStatus ? '' : 'not'} ok &bull;
+              monitoring {apiData.count} alerts &bull; delivered{' '}
+              {apiData.triggerCount.toLocaleString()} alerts in the last 24h
+            </Text>
+          </Flex>
+        ) : (
+          <Flex alignItems="center" mb={3}>
+            <Loader size={16} />
+            <Text color="grey" ml="6px">
+              loading stats...
+            </Text>
+          </Flex>
+        )}
         <Text as="p" fontSize={[2, 3]} mb={2} color="grey">
           create Elite Dangerous commodity market alerts. get notified when a
           specific commodity buys or sells above or below a certain value.
@@ -366,12 +415,46 @@ const Index = ({ backendStatus, count, triggerCount }) => {
             ?
           </Text>
         )}
+        <Box p={2} mt={4} sx={{ border: '2px solid', borderColor: 'grey' }}>
+          <Text color="primary" mb={1}>
+            LIVE
+          </Text>
+          {liveEvents.length ? (
+            liveEvents
+              .map((event) => (
+                <Box
+                  display="grid"
+                  sx={{
+                    gridTemplateColumns: '100px 18px auto',
+                    gridGap: '10px',
+                    alignItems: ['start', 'center'],
+                  }}
+                >
+                  <Text as="span" color="grey" fontSize="14px">
+                    {moment(event.ts).format('HH:mm:ss.SSS')}
+                  </Text>
+                  <Flex
+                    alignItems="center"
+                    color="primary"
+                    width="18px"
+                    height="18px"
+                  >
+                    <ErrorCircle size={18} />
+                  </Flex>
+                  {event.event}
+                </Box>
+              ))
+              .reverse()
+          ) : (
+            <Text>Waiting for alerts...</Text>
+          )}
+        </Box>
         <Text
           as="a"
           href="mailto:contact@edalerts.app"
           color="grey"
           display="inline-block"
-          mt={4}
+          mt={3}
         >
           contact@edalerts.app
         </Text>
@@ -400,25 +483,6 @@ const Index = ({ backendStatus, count, triggerCount }) => {
       </Layout>
     </>
   )
-}
-
-export const getServerSideProps = async () => {
-  let backendStatus = false
-
-  const statusRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}`)
-  if (statusRes.ok) {
-    backendStatus = true
-  }
-
-  const countRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/count`)
-  const { count } = await countRes.json()
-
-  const triggerCountRes = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE}/triggers/count/24h`
-  )
-  const { count: triggerCount } = await triggerCountRes.json()
-
-  return { props: { backendStatus, count, triggerCount } }
 }
 
 export default Index
