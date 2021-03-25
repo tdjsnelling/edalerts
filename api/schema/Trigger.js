@@ -3,13 +3,15 @@ const dotenv = require('dotenv')
 
 dotenv.config()
 
-mongoose.connect(process.env.MONGO_URL, {
-  useNewUrlParser: true,
-  useFindAndModify: false,
-  useUnifiedTopology: true,
-  reconnectTries: Number.MAX_VALUE,
-  reconnectInterval: 1000,
-})
+mongoose
+  .connect(process.env.MONGO_URL, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true,
+  })
+  .catch((e) => {
+    console.error(e)
+  })
 
 const Trigger = new mongoose.Schema({
   alert: mongoose.ObjectId,
