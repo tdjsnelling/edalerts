@@ -7,6 +7,8 @@ mongoose.connect(process.env.MONGO_URL, {
   useNewUrlParser: true,
   useFindAndModify: false,
   useUnifiedTopology: true,
+  reconnectTries: Number.MAX_VALUE,
+  reconnectInterval: 1000,
 })
 
 const Alert = new mongoose.Schema({
