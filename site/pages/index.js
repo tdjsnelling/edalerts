@@ -52,7 +52,7 @@ const Divider = styled(Text)(() =>
   })
 )
 
-const Index = ({ backendStatus, count, triggerCount }) => {
+const Index = () => {
   const [apiData, setApiData] = useState({})
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState(null)
@@ -188,8 +188,16 @@ const Index = ({ backendStatus, count, triggerCount }) => {
               sx={{ borderRadius: '50%' }}
             />
             <Text color="grey">
-              market listener {apiData.backendStatus ? '' : 'not'} ok &bull;
-              monitoring {apiData.count} alerts &bull; delivered{' '}
+              <Text
+                as="a"
+                href="https://edalerts.betteruptime.com/"
+                target="_blank"
+                rel="noopener noreferrer"
+                color="grey"
+              >
+                market listener {apiData.backendStatus ? '' : 'not'} ok
+              </Text>{' '}
+              &bull; monitoring {apiData.count} alerts &bull; delivered{' '}
               {apiData.triggerCount.toLocaleString()} alerts in the last 24h
             </Text>
           </Flex>
