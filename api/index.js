@@ -4,11 +4,34 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const morgan = require('morgan')
 const chalk = require('chalk')
+const mongoose = require('mongoose')
+const dotenv = require('dotenv')
+
+dotenv.config()
 
 const alertRoutes = require('./routes/alerts')
 const triggerRoutes = require('./routes/triggers')
 
 require('./listen')
+
+const connectToDb = () => {
+  console.log('initiating db connection...')
+  mongoose
+    .connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true,
+    })
+    .catch((e) => {
+      console.error(`error on initial db connection: ${e.message}`)
+      setTimeout(connectToDb, 5000)
+    })
+}
+connectToDb()
+
+mongoose.connection.once('open', () => {
+  console.log('connected to mongodb successfully')
+})
 
 const colorizeStatus = (status) => {
   if (!status) return '?'
