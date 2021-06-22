@@ -78,7 +78,7 @@ const EDAlerts = ({ Component, pageProps }) => {
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://edalerts.app" />
         <link rel="icon" href="favicon.png" type="image/png" />
-        <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+        <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <link
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
