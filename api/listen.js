@@ -159,6 +159,8 @@ const sendAlert = async ({
   for await (const [topic] of sock) {
     const inflated = JSON.parse(zlib.inflateSync(topic))
     if (inflated['$schemaRef'] === 'https://eddn.edcd.io/schemas/commodity/3') {
+      console.log(inflated.message.timestamp, 'eddn commodity message received')
+
       const [station] = stations.filter(
         (st) => st.name === inflated.message.stationName
       )
@@ -181,6 +183,10 @@ const sendAlert = async ({
       for (const commodity of commodities) {
         try {
           const alerts = await Alert.find({ commodity: commodity.name })
+          if (alerts.length > 0)
+            console.log(
+              `matched ${alerts.length} alerts for commodity ${commodity.name}`
+            )
           for (const alert of alerts) {
             if (
               alert.freq === 0 ||
