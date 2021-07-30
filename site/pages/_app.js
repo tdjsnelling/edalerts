@@ -47,13 +47,13 @@ const GlobalStyle = createGlobalStyle(
 )
 
 const EDAlerts = ({ Component, pageProps }) => {
-  useEffect(() => {
-    window.plausible =
-      window.plausible ||
-      function () {
-        ;(window.plausible.q = window.plausible.q || []).push(arguments)
-      }
-  }, [])
+  // useEffect(() => {
+  //   window.plausible =
+  //     window.plausible ||
+  //     function () {
+  //       ;(window.plausible.q = window.plausible.q || []).push(arguments)
+  //     }
+  // }, [])
 
   return (
     <>
@@ -83,11 +83,17 @@ const EDAlerts = ({ Component, pageProps }) => {
           rel="stylesheet"
           href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
         />
+        {/*<script*/}
+        {/*  async*/}
+        {/*  defer*/}
+        {/*  data-domain="edalerts.app"*/}
+        {/*  src="https://analytics.tdjs.tech/js/plausible.js"*/}
+        {/*/>*/}
         <script
-          async
-          defer
-          data-domain="edalerts.app"
-          src="https://analytics.tdjs.tech/js/plausible.js"
+          src="https://betteruptime.com/widgets/announcement.js"
+          data-id="124714"
+          async="async"
+          type="text/javascript"
         />
       </Head>
       <ThemeProvider theme={theme}>
