@@ -8,7 +8,8 @@ COPY . .
 RUN yarn
 
 RUN wget -q -O stations_large.json https://eddb.io/archive/v6/stations.json
-RUN cat stations_large.json | jq --stream '[fromstream(1|truncate_stream(inputs | . )) | {name,max_landing_pad_size,distance_to_star,type,is_planetary}]' > stations.json
+cat stations_large.json | jq '[.[] | {name,max_landing_pad_size,distance_to_star,type,is_planetary}]' > stations.json
+#RUN cat stations_large.json | jq --stream '[fromstream(1|truncate_stream(inputs | . )) | {name,max_landing_pad_size,distance_to_star,type,is_planetary}]' > stations.json
 RUN rm stations_large.json
 
 EXPOSE 3001
