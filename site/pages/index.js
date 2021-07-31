@@ -136,7 +136,7 @@ const Index = () => {
       })
 
       if (res.ok) {
-        plausible('Create')
+        //plausible('Create')
         setSuccess(true)
         setError(null)
         setLoading(false)
