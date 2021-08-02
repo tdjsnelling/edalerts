@@ -12,8 +12,6 @@ dotenv.config()
 const alertRoutes = require('./routes/alerts')
 const triggerRoutes = require('./routes/triggers')
 
-require('./listen')
-
 const connectToDb = () => {
   console.log('initiating db connection...')
   mongoose

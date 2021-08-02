@@ -1,2 +1,3 @@
 node_modules/
 stations.json
+.env

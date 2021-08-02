@@ -2,11 +2,35 @@ const zlib = require('zlib')
 const zmq = require('zeromq')
 const request = require('request-promise')
 const WebSocket = require('ws')
+const dotenv = require('dotenv')
+
+dotenv.config()
+
 const Alert = require('./schema/Alert')
 const Trigger = require('./schema/Trigger')
 const stations = require('./stations.json')
 const commodityData = require('./commodities.json')
 const rareCommodityData = require('./rarecommodities.json')
+const mongoose = require('mongoose')
+
+const connectToDb = () => {
+  console.log('initiating db connection...')
+  mongoose
+    .connect(process.env.MONGO_URL, {
+      useNewUrlParser: true,
+      useFindAndModify: false,
+      useUnifiedTopology: true,
+    })
+    .catch((e) => {
+      console.error(`error on initial db connection: ${e.message}`)
+      setTimeout(connectToDb, 5000)
+    })
+}
+connectToDb()
+
+mongoose.connection.once('open', () => {
+  console.log('connected to mongodb successfully')
+})
 
 const wss = new WebSocket.Server({ port: process.env.WSPORT || 3002 })
 

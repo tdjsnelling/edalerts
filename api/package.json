@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "start": "node index.js"
+    "start": "node index.js",
+    "listen": "node listen.js"
   },
   "dependencies": {
     "body-parser": "^1.19.0",
