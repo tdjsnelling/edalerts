@@ -12,4 +12,6 @@ RUN cat stations_large.json | jq '[.[] | {name,max_landing_pad_size,distance_to_
 #RUN cat stations_large.json | jq --stream '[fromstream(1|truncate_stream(inputs | . )) | {name,max_landing_pad_size,distance_to_star,type,is_planetary}]' > stations.json
 RUN rm stations_large.json
 
+EXPOSE 3002
+
 CMD ["yarn", "listen"]
