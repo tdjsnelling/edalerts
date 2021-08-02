@@ -1,7 +1,6 @@
 const zlib = require('zlib')
 const zmq = require('zeromq')
 const request = require('request-promise')
-const WebSocket = require('ws')
 const dotenv = require('dotenv')
 
 dotenv.config()
@@ -31,8 +30,6 @@ connectToDb()
 mongoose.connection.once('open', () => {
   console.log('connected to mongodb successfully')
 })
-
-const wss = new WebSocket.Server({ port: process.env.WSPORT || 3002 })
 
 const sendAlert = async ({
   alertId,
@@ -68,16 +65,6 @@ const sendAlert = async ({
   } ${alertValue}`
 
   try {
-    wss.clients.forEach((client) => {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send(
-          `${commodity ? commodity.name : commodityName} ${type} ${
-            trigger === 'above' ? '>' : '<'
-          } ${alertValue} (${station}, ${system})`
-        )
-      }
-    })
-
     if (!process.env.DISABLE_WEBHOOKS) {
       await request({
         uri: webhookUrl,

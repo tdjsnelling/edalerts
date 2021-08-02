@@ -60,7 +60,7 @@ const Index = () => {
   const [alertType, setAlertType] = useState('sell')
   const [showLimitWarning, setShowLimitWarning] = useState(false)
   const [loading, setLoading] = useState(false)
-  const [liveEvents, setLiveEvents] = useState([])
+  // const [liveEvents, setLiveEvents] = useState([])
   const router = useRouter()
 
   useEffect(() => {
@@ -76,26 +76,26 @@ const Index = () => {
       const { count } = await countRes.json()
 
       const triggerCountRes = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE}/triggers/count/24h`
+        `${process.env.NEXT_PUBLIC_API_BASE}/triggers/count/all`
       )
       const { count: triggerCount } = await triggerCountRes.json()
 
       setApiData({ backendStatus, count, triggerCount })
     })()
 
-    const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_BASE)
-    const addEvent = (data) => {
-      setLiveEvents((events) => {
-        let currEvents = [...events]
-        currEvents.push({ ts: new Date(), event: data.data })
-        if (currEvents.length > 5) currEvents = currEvents.slice(-5)
-        return currEvents
-      })
-    }
-    ws.addEventListener('message', addEvent)
-    return () => {
-      ws.removeEventListener('message', addEvent)
-    }
+    // const ws = new WebSocket(process.env.NEXT_PUBLIC_WS_BASE)
+    // const addEvent = (data) => {
+    //   setLiveEvents((events) => {
+    //     let currEvents = [...events]
+    //     currEvents.push({ ts: new Date(), event: data.data })
+    //     if (currEvents.length > 5) currEvents = currEvents.slice(-5)
+    //     return currEvents
+    //   })
+    // }
+    // ws.addEventListener('message', addEvent)
+    // return () => {
+    //   ws.removeEventListener('message', addEvent)
+    // }
   }, [])
 
   const handleSubmit = async (e) => {
@@ -197,8 +197,8 @@ const Index = () => {
               >
                 market listener {apiData.backendStatus ? '' : 'not'} ok
               </Text>{' '}
-              &bull; monitoring {apiData.count} alerts &bull; delivered{' '}
-              {apiData.triggerCount.toLocaleString()} alerts in the last 24h
+              &bull; monitoring {apiData.count} alerts &bull; delivered over{' '}
+              {apiData.triggerCount.toLocaleString()} notifications!
             </Text>
           </Flex>
         ) : (
@@ -423,40 +423,40 @@ const Index = () => {
             ?
           </Text>
         )}
-        <Box p={2} mt={4} sx={{ border: '2px solid', borderColor: 'grey' }}>
-          <Text color="primary" mb={1}>
-            LIVE
-          </Text>
-          {liveEvents.length ? (
-            liveEvents
-              .map((event) => (
-                <Box
-                  display="grid"
-                  sx={{
-                    gridTemplateColumns: '100px 18px auto',
-                    gridGap: '10px',
-                    alignItems: ['start', 'center'],
-                  }}
-                >
-                  <Text as="span" color="grey" fontSize="14px">
-                    {moment(event.ts).format('HH:mm:ss.SSS')}
-                  </Text>
-                  <Flex
-                    alignItems="center"
-                    color="primary"
-                    width="18px"
-                    height="18px"
-                  >
-                    <ErrorCircle size={18} />
-                  </Flex>
-                  {event.event}
-                </Box>
-              ))
-              .reverse()
-          ) : (
-            <Text>Waiting for alerts...</Text>
-          )}
-        </Box>
+        {/*<Box p={2} mt={4} sx={{ border: '2px solid', borderColor: 'grey' }}>*/}
+        {/*  <Text color="primary" mb={1}>*/}
+        {/*    LIVE*/}
+        {/*  </Text>*/}
+        {/*  {liveEvents.length ? (*/}
+        {/*    liveEvents*/}
+        {/*      .map((event) => (*/}
+        {/*        <Box*/}
+        {/*          display="grid"*/}
+        {/*          sx={{*/}
+        {/*            gridTemplateColumns: '100px 18px auto',*/}
+        {/*            gridGap: '10px',*/}
+        {/*            alignItems: ['start', 'center'],*/}
+        {/*          }}*/}
+        {/*        >*/}
+        {/*          <Text as="span" color="grey" fontSize="14px">*/}
+        {/*            {moment(event.ts).format('HH:mm:ss.SSS')}*/}
+        {/*          </Text>*/}
+        {/*          <Flex*/}
+        {/*            alignItems="center"*/}
+        {/*            color="primary"*/}
+        {/*            width="18px"*/}
+        {/*            height="18px"*/}
+        {/*          >*/}
+        {/*            <ErrorCircle size={18} />*/}
+        {/*          </Flex>*/}
+        {/*          {event.event}*/}
+        {/*        </Box>*/}
+        {/*      ))*/}
+        {/*      .reverse()*/}
+        {/*  ) : (*/}
+        {/*    <Text>Waiting for alerts...</Text>*/}
+        {/*  )}*/}
+        {/*</Box>*/}
         <Text
           as="a"
           href="mailto:contact@edalerts.app"
