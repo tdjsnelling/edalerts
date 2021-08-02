@@ -174,13 +174,13 @@ const sendAlert = async ({
 
 //
 ;(async () => {
-  const sock = new zmq.Subscriber()
+  const sock = zmq.socket('sub')
   sock.connect('tcp://eddn.edcd.io:9500')
-  console.log('listener: worker connected to eddn.edcd.io:9500')
-
   sock.subscribe('')
 
-  for await (const [topic] of sock) {
+  console.log('zmq connected to tcp://eddn.edcd.io:9500')
+
+  sock.on('message', async (topic) => {
     const inflated = JSON.parse(zlib.inflateSync(topic))
     if (inflated['$schemaRef'] === 'https://eddn.edcd.io/schemas/commodity/3') {
       console.log(inflated.message.timestamp, 'eddn commodity message received')
@@ -206,7 +206,9 @@ const sendAlert = async ({
       const commodities = inflated.message.commodities
       for (const commodity of commodities) {
         try {
-          const alerts = await Alert.find({ commodity: commodity.name })
+          const alerts = await Alert.find({
+            commodity: commodity.name,
+          }).maxTimeMS(2000)
           if (alerts.length > 0)
             console.log(
               `matched ${alerts.length} alerts for commodity ${commodity.name}`
@@ -337,5 +339,5 @@ const sendAlert = async ({
         }
       }
     }
-  }
+  })
 })()

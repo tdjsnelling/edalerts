@@ -18,7 +18,7 @@
     "request": "^2.88.2",
     "request-promise": "^4.2.5",
     "ws": "^7.4.4",
-    "zeromq": "6.0.0-beta.5",
+    "zeromq": "^5.2.8",
     "zlib": "^1.0.5"
   },
   "devDependencies": {

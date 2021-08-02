@@ -1052,12 +1052,17 @@ ms@2.1.2, ms@^2.1.1:
   resolved "https://registry.yarnpkg.com/ms/-/ms-2.1.2.tgz#d09d1f357b443f493382a8eb3ccd183872ae6009"
   integrity sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==
 
+nan@2.14.2:
+  version "2.14.2"
+  resolved "https://registry.yarnpkg.com/nan/-/nan-2.14.2.tgz#f5376400695168f4cc694ac9393d0c9585eeea19"
+  integrity sha512-M2ufzIiINKCuDfBSAUr1vWQ+vuVcA9kqx8JJUsbQi6yf1uGRyb7HfpdfUr5qLXf3B/t8dPvcjhKMmlfnP47EzQ==
+
 negotiator@0.6.2:
   version "0.6.2"
   resolved "https://registry.yarnpkg.com/negotiator/-/negotiator-0.6.2.tgz#feacf7ccf525a77ae9634436a64883ffeca346fb"
   integrity sha512-hZXc7K2e+PgeI1eDBe/10Ard4ekbfrrqG8Ep+8Jmf4JID2bNg7NvCPOZN+kfF574pFQI7mum2AUqDidoKqcTOw==
 
-node-gyp-build@^4.1.0:
+node-gyp-build@^4.2.3:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.2.3.tgz#ce6277f853835f718829efb47db20f3e4d9c4739"
   integrity sha512-MN6ZpzmfNCRM+3t57PTJHgHyw/h4OWnZ6mR8P5j/uZtqQr46RRuDE/P+g3n0YR/AiYXeWixZZzaip77gdICfRg==
@@ -1704,12 +1709,13 @@ xdg-basedir@^4.0.0:
   resolved "https://registry.yarnpkg.com/xdg-basedir/-/xdg-basedir-4.0.0.tgz#4bc8d9984403696225ef83a1573cbbcb4e79db13"
   integrity sha512-PSNhEJDejZYV7h50BohL09Er9VaIefr2LMAf3OEmpCkjOi34eYyQYAXUTjEQtZJTKcF0E2UKTh+osDLsgNim9Q==
 
-zeromq@6.0.0-beta.5:
-  version "6.0.0-beta.5"
-  resolved "https://registry.yarnpkg.com/zeromq/-/zeromq-6.0.0-beta.5.tgz#098505fcb66beb78eeb0c541efe415d3e2090292"
-  integrity sha512-zsSbjfLjDxQq/Mp6NemNK/AVpm1NeafJRgz7nos1nV9MI/3w/P76pFdlqzxRTW4cuNqyFXJ4Q7g2tUhaZi4rcg==
+zeromq@^5.2.8:
+  version "5.2.8"
+  resolved "https://registry.yarnpkg.com/zeromq/-/zeromq-5.2.8.tgz#94b0b85e4152e98b8bb163f1db4a34280d44d9d0"
+  integrity sha512-bXzsk7KOmgLSv1tC0Ms1VXBy90+Rz27ZYf27cLuldRYbpqYpuWJfxxHFhO710t22zgWBnmdUP0m3SKFpLI0u5g==
   dependencies:
-    node-gyp-build "^4.1.0"
+    nan "2.14.2"
+    node-gyp-build "^4.2.3"
 
 zlib@^1.0.5:
   version "1.0.5"
