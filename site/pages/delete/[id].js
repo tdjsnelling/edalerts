@@ -26,7 +26,7 @@ const Index = () => {
         )
 
         if (res.ok) {
-          plausible('Delete')
+          //plausible('Delete')
           setSuccess(true)
           setError(null)
         } else {
