@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import moment from 'moment'
 import { Flex, Box, Heading, Text } from 'rebass/styled-components'
 import styled from 'styled-components'
 import css from '@styled-system/css'
@@ -12,6 +11,7 @@ import Button from '../components/Button'
 import Input from '../components/Input'
 import Select from '../components/Select'
 import Checkbox from '../components/Checkbox'
+import { event } from '../lib/ga'
 
 import commodities from '../commodities.json'
 import rarecommodities from '../rarecommodities.json'
@@ -136,7 +136,7 @@ const Index = () => {
       })
 
       if (res.ok) {
-        //plausible('Create')
+        event({ action: 'create' })
         setSuccess(true)
         setError(null)
         setLoading(false)
