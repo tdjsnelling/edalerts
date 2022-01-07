@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Flex, Box, Heading, Text } from 'rebass/styled-components'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import css from '@styled-system/css'
 import { createGlobalStyle } from 'styled-components'
 import { Loader, HelpCircle, ErrorCircle } from '@styled-icons/boxicons-regular'
@@ -52,6 +52,19 @@ const Divider = styled(Text)(() =>
   })
 )
 
+const spin = keyframes`
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+`
+
+const Spinner = styled(Loader)`
+  animation: ${spin} 2s linear infinite;
+`
+
 const Index = () => {
   const [apiData, setApiData] = useState({})
   const [success, setSuccess] = useState(false)
@@ -72,8 +85,12 @@ const Index = () => {
         backendStatus = true
       }
 
+      setApiData({ backendStatus })
+
       const countRes = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/count`)
       const { count } = await countRes.json()
+
+      setApiData({ backendStatus, count })
 
       const triggerCountRes = await fetch(
         `${process.env.NEXT_PUBLIC_API_BASE}/triggers/count/all`
@@ -197,13 +214,26 @@ const Index = () => {
               >
                 market listener {apiData.backendStatus ? '' : 'not'} ok
               </Text>{' '}
-              &bull; monitoring {apiData.count} alerts &bull; delivered over{' '}
-              {apiData.triggerCount.toLocaleString()} notifications!
+              {apiData.count && <>&bull; monitoring {apiData.count} alerts </>}
+              {apiData.triggerCount && (
+                <>
+                  &bull; delivered over {apiData.triggerCount.toLocaleString()}{' '}
+                  notifications!
+                </>
+              )}
             </Text>
+            {Object.keys(apiData).length < 3 && (
+              <Flex alignItems="center" ml={1}>
+                <Spinner size={16} />
+                <Text color="grey" ml="6px">
+                  loading stats...
+                </Text>
+              </Flex>
+            )}
           </Flex>
         ) : (
           <Flex alignItems="center" mb={3}>
-            <Loader size={16} />
+            <Spinner size={16} />
             <Text color="grey" ml="6px">
               loading stats...
             </Text>

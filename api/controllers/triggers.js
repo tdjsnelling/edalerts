@@ -1,9 +1,14 @@
+const memoize = require('memoizee')
 const Trigger = require('../schema/Trigger')
+
+const memoizedCount = memoize(async () => await Trigger.countDocuments({}), {
+  maxAge: 1000 * 60 * 60 * 24,
+})
 
 module.exports = {
   count: async (req, res) => {
     try {
-      const count = await Trigger.countDocuments({})
+      const count = await memoizedCount()
       res.send({ count })
     } catch (e) {
       res.status(500).send(e.message)
