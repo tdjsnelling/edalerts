@@ -47,6 +47,7 @@ const sendAlert = async ({
   distance,
   planetary,
   webhookUrl,
+  discordUser,
   freq,
 }) => {
   if (freq > 0) {
@@ -72,6 +73,7 @@ const sendAlert = async ({
         json: {
           username: 'ED Alerts',
           avatar_url: 'https://edalerts.app/favicon.png',
+          content: discordUser ? `<@${discordUser}>` : undefined,
           embeds: [
             {
               title: title,
@@ -239,6 +241,7 @@ const sendAlert = async ({
                         distance,
                         planetary,
                         webhookUrl: alert.webhook,
+                        discordUser: alert.discordUser,
                         freq: alert.freq,
                       })
                     } else if (
@@ -261,6 +264,7 @@ const sendAlert = async ({
                         distance,
                         planetary,
                         webhookUrl: alert.webhook,
+                        discordUser: alert.discordUser,
                         freq: alert.freq,
                       })
                     }
@@ -289,6 +293,7 @@ const sendAlert = async ({
                         distance,
                         planetary,
                         webhookUrl: alert.webhook,
+                        discordUser: alert.discordUser,
                         freq: alert.freq,
                       })
                     } else if (
@@ -311,6 +316,7 @@ const sendAlert = async ({
                         distance,
                         planetary,
                         webhookUrl: alert.webhook,
+                        discordUser: alert.discordUser,
                         freq: alert.freq,
                       })
                     }
