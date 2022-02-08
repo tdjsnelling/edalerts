@@ -27,8 +27,9 @@ const connectToDb = () => {
 }
 connectToDb()
 
-mongoose.connection.once('open', () => {
+mongoose.connection.once('open', async () => {
   console.log('connected to mongodb successfully')
+  await listen()
 })
 
 const sendAlert = async ({
@@ -159,8 +160,7 @@ const sendAlert = async ({
   }
 }
 
-//
-;(async () => {
+const listen = async () => {
   const sock = zmq.socket('sub')
   sock.connect('tcp://eddn.edcd.io:9500')
   sock.subscribe('')
@@ -327,4 +327,4 @@ const sendAlert = async ({
       }
     }
   })
-})()
+}

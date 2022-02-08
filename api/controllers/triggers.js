@@ -11,6 +11,7 @@ module.exports = {
       const count = await memoizedCount()
       res.send({ count })
     } catch (e) {
+      memoizedCount.clear()
       res.status(500).send(e.message)
     }
   },
