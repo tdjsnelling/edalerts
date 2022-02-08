@@ -147,6 +147,7 @@ const Index = () => {
           includePlanetary: form.get('includePlanetary') === 'on',
           includeFleetCarrier: form.get('includeFleetCarrier') === 'on',
           webhook: form.get('webhook'),
+          discordUser: form.get('discordUser'),
           freq: form.get('freq'),
           token: token,
         }),
@@ -346,13 +347,27 @@ const Index = () => {
               </Box>
               <Box mb={2}>
                 <Flex alignItems="center">
-                  <Input
-                    type="url"
-                    name="webhook"
-                    placeholder="discord webhook url"
+                  <Box
+                    width="100%"
                     mr={1}
-                    required
-                  />
+                    sx={{
+                      display: 'grid',
+                      gridTemplateColumns: ['repeat(1, 1fr)', '2fr 1fr'],
+                      gridGap: [2, 1],
+                    }}
+                  >
+                    <Input
+                      type="url"
+                      name="webhook"
+                      placeholder="discord webhook url"
+                      required
+                    />
+                    <Input
+                      type="text"
+                      name="discordUser"
+                      placeholder="user id (optional)"
+                    />
+                  </Box>
                   <Box
                     color={showHelp ? 'primary' : 'grey'}
                     onClick={() => setShowHelp(!showHelp)}
@@ -377,7 +392,11 @@ const Index = () => {
                     of a text channel, select ‘integrations’ and then
                     ‘webhooks’. create a new webhook, and copy the url here.
                     don’t worry about the name and avatar, as these will be
-                    overwritten by ED Alerts.
+                    overwritten by ED Alerts. If you want to be{' '}
+                    <strong>@mentioned</strong> in the alert messages, then you
+                    can also enter your Discord user id. to find your user id,
+                    type <strong>\@yourusername</strong> in your Discord
+                    channel. enter just the long number here.
                   </Text>
                 )}
               </Box>

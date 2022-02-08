@@ -6,6 +6,7 @@ const Alert = new mongoose.Schema({
   trigger: String,
   value: Number,
   webhook: String,
+  discordUser: String,
   minSupply: Number,
   minDemand: Number,
   pad: String,
