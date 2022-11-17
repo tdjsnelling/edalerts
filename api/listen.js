@@ -135,15 +135,15 @@ const sendAlert = async ({
           ],
         },
       })
+
+      const newTrigger = new Trigger({
+        alert: alertId,
+        timestamp: Date.now(),
+      })
+      await newTrigger.save()
+
+      console.log(`sent alert ${alertId} successfully`)
     }
-
-    const newTrigger = new Trigger({
-      alert: alertId,
-      timestamp: Date.now(),
-    })
-    await newTrigger.save()
-
-    console.log(`sent alert ${alertId} successfully`)
   } catch (e) {
     if (e && e.message) {
       const {
@@ -174,13 +174,19 @@ const listen = async () => {
     if (inflated['$schemaRef'] === 'https://eddn.edcd.io/schemas/commodity/3') {
       console.log(inflated.message.timestamp, 'eddn commodity message received')
 
-      const [station] = stations.filter(
-        (st) => st.name === inflated.message.stationName
-      )
-      const planetary = station ? station.is_planetary : false
       const fleetCarrier = /^[a-z0-9]{3}-[a-z0-9]{3}$/i.test(
         inflated.message.stationName
       )
+
+      let station = stations.find(
+        (st) =>
+          st.name === inflated.message.stationName &&
+          (st.system_name && !fleetCarrier
+            ? st.system_name === inflated.message.systemName
+            : true)
+      )
+
+      const planetary = station ? station.is_planetary : false
       const stationType = fleetCarrier
         ? 'Fleet Carrier'
         : station
@@ -199,132 +205,130 @@ const listen = async () => {
             commodity: commodity.name,
           }).maxTimeMS(2000)
           if (alerts.length > 0)
-            console.log(
-              `matched ${alerts.length} alerts for commodity ${commodity.name}`
-            )
-          for (const alert of alerts) {
-            if (
-              alert.freq === 0 ||
-              (alert.freq > 0 && Date.now() > alert.lastSent + alert.freq)
-            ) {
+            for (const alert of alerts) {
               if (
-                alert.pad === 'any' ||
-                (alert.pad === 'l' && maxPadSize === 'L') ||
-                maxPadSize === 'unknown'
+                alert.freq === 0 ||
+                (alert.freq > 0 && Date.now() > alert.lastSent + alert.freq)
               ) {
                 if (
-                  ((planetary && alert.includePlanetary) || !planetary) &&
-                  ((fleetCarrier && alert.includeFleetCarrier) || !fleetCarrier)
+                  alert.pad === 'any' ||
+                  (alert.pad === 'l' && maxPadSize === 'L') ||
+                  maxPadSize === 'unknown'
                 ) {
                   if (
-                    alert.type === 'buy' &&
-                    commodity.buyPrice !== 0 &&
-                    commodity.stock > alert.minSupply
+                    ((planetary && alert.includePlanetary) || !planetary) &&
+                    ((fleetCarrier && alert.includeFleetCarrier) ||
+                      !fleetCarrier)
                   ) {
                     if (
-                      alert.trigger === 'above' &&
-                      commodity.buyPrice > alert.value
+                      alert.type === 'buy' &&
+                      commodity.buyPrice !== 0 &&
+                      commodity.stock > alert.minSupply
                     ) {
-                      await sendAlert({
-                        alertId: alert._id,
-                        alertValue: alert.value,
-                        commodityName: commodity.name,
-                        type: 'buy',
-                        trigger: 'above',
-                        value: commodity.buyPrice,
-                        station: inflated.message.stationName,
-                        system: inflated.message.systemName,
-                        demand: commodity.demand,
-                        supply: commodity.stock,
-                        maxPadSize,
-                        stationType,
-                        distance,
-                        planetary,
-                        webhookUrl: alert.webhook,
-                        discordUser: alert.discordUser,
-                        freq: alert.freq,
-                      })
+                      if (
+                        alert.trigger === 'above' &&
+                        commodity.buyPrice > alert.value
+                      ) {
+                        await sendAlert({
+                          alertId: alert._id,
+                          alertValue: alert.value,
+                          commodityName: commodity.name,
+                          type: 'buy',
+                          trigger: 'above',
+                          value: commodity.buyPrice,
+                          station: inflated.message.stationName,
+                          system: inflated.message.systemName,
+                          demand: commodity.demand,
+                          supply: commodity.stock,
+                          maxPadSize,
+                          stationType,
+                          distance,
+                          planetary,
+                          webhookUrl: alert.webhook,
+                          discordUser: alert.discordUser,
+                          freq: alert.freq,
+                        })
+                      } else if (
+                        alert.trigger === 'below' &&
+                        commodity.buyPrice < alert.value
+                      ) {
+                        await sendAlert({
+                          alertId: alert._id,
+                          alertValue: alert.value,
+                          commodityName: commodity.name,
+                          type: 'buy',
+                          trigger: 'below',
+                          value: commodity.buyPrice,
+                          station: inflated.message.stationName,
+                          system: inflated.message.systemName,
+                          demand: commodity.demand,
+                          supply: commodity.stock,
+                          maxPadSize,
+                          stationType,
+                          distance,
+                          planetary,
+                          webhookUrl: alert.webhook,
+                          discordUser: alert.discordUser,
+                          freq: alert.freq,
+                        })
+                      }
                     } else if (
-                      alert.trigger === 'below' &&
-                      commodity.buyPrice < alert.value
+                      alert.type === 'sell' &&
+                      commodity.sellPrice !== 0 &&
+                      commodity.demand > alert.minDemand
                     ) {
-                      await sendAlert({
-                        alertId: alert._id,
-                        alertValue: alert.value,
-                        commodityName: commodity.name,
-                        type: 'buy',
-                        trigger: 'below',
-                        value: commodity.buyPrice,
-                        station: inflated.message.stationName,
-                        system: inflated.message.systemName,
-                        demand: commodity.demand,
-                        supply: commodity.stock,
-                        maxPadSize,
-                        stationType,
-                        distance,
-                        planetary,
-                        webhookUrl: alert.webhook,
-                        discordUser: alert.discordUser,
-                        freq: alert.freq,
-                      })
-                    }
-                  } else if (
-                    alert.type === 'sell' &&
-                    commodity.sellPrice !== 0 &&
-                    commodity.demand > alert.minDemand
-                  ) {
-                    if (
-                      alert.trigger === 'above' &&
-                      commodity.sellPrice > alert.value
-                    ) {
-                      await sendAlert({
-                        alertId: alert._id,
-                        alertValue: alert.value,
-                        commodityName: commodity.name,
-                        type: 'sell',
-                        trigger: 'above',
-                        value: commodity.sellPrice,
-                        station: inflated.message.stationName,
-                        system: inflated.message.systemName,
-                        demand: commodity.demand,
-                        supply: commodity.stock,
-                        maxPadSize,
-                        stationType,
-                        distance,
-                        planetary,
-                        webhookUrl: alert.webhook,
-                        discordUser: alert.discordUser,
-                        freq: alert.freq,
-                      })
-                    } else if (
-                      alert.trigger === 'below' &&
-                      commodity.sellPrice < alert.value
-                    ) {
-                      await sendAlert({
-                        alertId: alert._id,
-                        alertValue: alert.value,
-                        commodityName: commodity.name,
-                        type: 'sell',
-                        trigger: 'below',
-                        value: commodity.sellPrice,
-                        station: inflated.message.stationName,
-                        system: inflated.message.systemName,
-                        demand: commodity.demand,
-                        supply: commodity.stock,
-                        maxPadSize,
-                        stationType,
-                        distance,
-                        planetary,
-                        webhookUrl: alert.webhook,
-                        discordUser: alert.discordUser,
-                        freq: alert.freq,
-                      })
+                      if (
+                        alert.trigger === 'above' &&
+                        commodity.sellPrice > alert.value
+                      ) {
+                        await sendAlert({
+                          alertId: alert._id,
+                          alertValue: alert.value,
+                          commodityName: commodity.name,
+                          type: 'sell',
+                          trigger: 'above',
+                          value: commodity.sellPrice,
+                          station: inflated.message.stationName,
+                          system: inflated.message.systemName,
+                          demand: commodity.demand,
+                          supply: commodity.stock,
+                          maxPadSize,
+                          stationType,
+                          distance,
+                          planetary,
+                          webhookUrl: alert.webhook,
+                          discordUser: alert.discordUser,
+                          freq: alert.freq,
+                        })
+                      } else if (
+                        alert.trigger === 'below' &&
+                        commodity.sellPrice < alert.value
+                      ) {
+                        await sendAlert({
+                          alertId: alert._id,
+                          alertValue: alert.value,
+                          commodityName: commodity.name,
+                          type: 'sell',
+                          trigger: 'below',
+                          value: commodity.sellPrice,
+                          station: inflated.message.stationName,
+                          system: inflated.message.systemName,
+                          demand: commodity.demand,
+                          supply: commodity.stock,
+                          maxPadSize,
+                          stationType,
+                          distance,
+                          planetary,
+                          webhookUrl: alert.webhook,
+                          discordUser: alert.discordUser,
+                          freq: alert.freq,
+                        })
+                      }
                     }
                   }
                 }
               }
             }
-          }
         } catch (e) {
           if (e && e.message)
             console.error(`error handling alert: ${e.message}`)
