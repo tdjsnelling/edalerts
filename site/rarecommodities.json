@@ -891,7 +891,7 @@
   {
     "id": 128672316,
     "symbol": "MasterChefs",
-    "market_id": 3228193280,
+    "market_id": 128123640,
     "category": "Slavery",
     "name": "Master Chefs"
   },
@@ -985,5 +985,12 @@
     "market_id": 128958681,
     "category": "Legal Drugs",
     "name": "Apa Vietii"
+  },
+  {
+    "id": 129002574,
+    "symbol": "ClassifiedExperimentalEquipment",
+    "market_id": 128986325,
+    "category": "Technology",
+    "name": "Classified Experimental Equipment"
   }
 ]

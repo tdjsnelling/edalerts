@@ -1371,7 +1371,7 @@
     "id": 128924332,
     "symbol": "Opal",
     "category": "Minerals",
-    "name": "Void Opals"
+    "name": "Void Opal"
   },
   {
     "id": 128924333,
@@ -1390,5 +1390,17 @@
     "symbol": "Tritium",
     "category": "Chemicals",
     "name": "Tritium"
+  },
+  {
+    "id": 128983059,
+    "symbol": "OnionHeadC",
+    "category": "Legal Drugs",
+    "name": "Onionhead Gamma Strain"
+  },
+  {
+    "id": 129015433,
+    "symbol": "AncientRelicTG",
+    "category": "Salvage",
+    "name": "Unclassified Relic"
   }
 ]
