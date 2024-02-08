@@ -1,3 +1,4 @@
 node_modules/
-stations.json
+stations_large.json
+systems_large.json
 .env

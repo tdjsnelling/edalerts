@@ -1,9 +1,12 @@
 const memoize = require('memoizee')
 const Trigger = require('../schema/Trigger')
 
-const memoizedCount = memoize(async () => await Trigger.countDocuments({}), {
-  maxAge: 1000 * 60 * 60 * 24,
-})
+const memoizedCount = memoize(
+  async () => await Trigger.estimatedDocumentCount(),
+  {
+    maxAge: 1000 * 60 * 60 * 24,
+  }
+)
 
 module.exports = {
   count: async (req, res) => {
@@ -47,6 +50,14 @@ module.exports = {
         { $sort: { _id: 1 } },
       ])
       res.send(triggers)
+    } catch (e) {
+      res.status(500).send(e.message)
+    }
+  },
+  hasSentLast24h: async (req, res) => {
+    try {
+      const doc = await Trigger.findOne({}, {}, { sort: { _id: -1 } })
+      res.send({ sent: doc && doc.timestamp > Date.now() - 8.64e7 })
     } catch (e) {
       res.status(500).send(e.message)
     }

@@ -66,6 +66,8 @@ const sendAlert = async ({
     trigger === 'above' ? '>' : '<'
   } ${alertValue}`
 
+  console.log(`-> ${title}`)
+
   try {
     if (!process.env.DISABLE_WEBHOOKS) {
       await request({
