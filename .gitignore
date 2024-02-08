@@ -104,7 +104,6 @@ dist
 # TernJS port file
 .tern-port
 
-api/stations.json
 api/stations_large.json
 api/systems_large.json
 
