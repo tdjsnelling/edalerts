@@ -23,6 +23,12 @@ export const intervalOptions = {
   60000: 'at most every 1 minute',
   120000: 'at most every 2 minutes',
   300000: 'at most every 5 minutes',
+  900000: 'at most every 15 minutes',
+  1800000: 'at most every 30 minutes',
+  3600000: 'at most every 1 hour',
+  10800000: 'at most every 3 hours',
+  43200000: 'at most every 12 hours',
+  86400000: 'at most every 24 hours',
 }
 
 const RecaptchaStyle = createGlobalStyle`
@@ -339,10 +345,10 @@ const Index = () => {
                   gridGap: [2, 1],
                 }}
               >
-                <Checkbox name="includePlanetary" label="Include planetary" />
+                <Checkbox name="includePlanetary" label="include planetary" />
                 <Checkbox
                   name="includeFleetCarrier"
-                  label="Include fleet carriers"
+                  label="include fleet carriers"
                 />
               </Box>
               <Box mb={2}>
@@ -425,9 +431,8 @@ const Index = () => {
                     rate limiting your webhook, causing{' '}
                     <strong>all alerts to that webhook be undelivered</strong>.
                     this risk even is higher if you use the same webhook for
-                    multiple alerts — if you need as-they-happen alerts (and you
-                    most likely don’t), it is recommended that you use a
-                    separate webhook for each.
+                    multiple alerts — if you need as-they-happen alerts, it is
+                    recommended that you use a separate webhook for each.
                   </Text>
                 )}
               </Box>
