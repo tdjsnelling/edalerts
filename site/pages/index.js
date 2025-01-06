@@ -531,13 +531,13 @@ const Index = () => {
             &copy; {new Date().getFullYear()}{' '}
             <Text
               as="a"
-              href="https://tdjs.tech"
+              href="https://tdjs.dev"
               target="_blank"
               rel="noopener noreferrer"
               color="grey"
               fontSize={0}
             >
-              tdjs.tech
+              tdjs.dev
             </Text>{' '}
             / CMDR tdjs
           </Text>
