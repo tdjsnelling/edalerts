@@ -11,8 +11,9 @@ import {
   display,
 } from 'styled-system'
 import css from '@styled-system/css'
+import shouldForwardProp from '@styled-system/should-forward-prop'
 
-const StyledInput = styled.input(
+const StyledInput = styled.input.withConfig({ shouldForwardProp })(
   space,
   layout,
   background,

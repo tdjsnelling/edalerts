@@ -13,13 +13,14 @@ import {
 import css from '@styled-system/css'
 import { Box } from 'rebass/styled-components'
 import { ChevronDown } from '@styled-icons/boxicons-regular'
+import shouldForwardProp from '@styled-system/should-forward-prop'
 
 const Wrapper = styled.div`
   position: relative;
   width: 100%;
 `
 
-const StyledSelect = styled.select(
+const StyledSelect = styled.select.withConfig({ shouldForwardProp })(
   space,
   layout,
   background,

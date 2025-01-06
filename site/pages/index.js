@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 import { Flex, Box, Heading, Text } from 'rebass/styled-components'
 import styled, { keyframes } from 'styled-components'
@@ -191,9 +190,6 @@ const Index = () => {
 
   return (
     <>
-      <Head>
-        <script src="https://www.google.com/recaptcha/api.js?render=6LcaQLcZAAAAAKiWMe5dw56olYAlxsC3m3zc-8NO" />
-      </Head>
       <RecaptchaStyle />
       <Layout>
         <Heading as="h1" fontSize={[5, 7]}>

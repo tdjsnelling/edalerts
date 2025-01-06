@@ -13,6 +13,7 @@ import {
 } from 'styled-system'
 import css from '@styled-system/css'
 import { Loader } from '@styled-icons/boxicons-regular'
+import shouldForwardProp from '@styled-system/should-forward-prop'
 
 const spin = keyframes`
   from {
@@ -27,7 +28,7 @@ const Loading = styled(Loader)`
   animation: ${spin} 2s linear infinite;
 `
 
-const StyledButton = styled.button(
+const StyledButton = styled.button.withConfig({ shouldForwardProp })(
   space,
   layout,
   background,

@@ -49,6 +49,17 @@ class MyDocument extends Document {
           `,
             }}
           />
+          <link
+            rel="stylesheet"
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
+          />
+          <script
+            src="https://betteruptime.com/widgets/announcement.js"
+            data-id="124714"
+            async="async"
+            type="text/javascript"
+          />
+          <script src="https://www.google.com/recaptcha/api.js?render=6LcaQLcZAAAAAKiWMe5dw56olYAlxsC3m3zc-8NO" />
         </Head>
         <body>
           <Main />

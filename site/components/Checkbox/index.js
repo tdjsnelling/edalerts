@@ -2,8 +2,9 @@ import React from 'react'
 import styled from 'styled-components'
 import css from '@styled-system/css'
 import { Box, Text } from 'rebass/styled-components'
+import shouldForwardProp from '@styled-system/should-forward-prop'
 
-const Container = styled.label(() =>
+const Container = styled.label.withConfig({ shouldForwardProp })(() =>
   css({
     display: 'flex',
     alignItems: 'center',
