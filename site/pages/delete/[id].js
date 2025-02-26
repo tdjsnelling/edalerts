@@ -4,7 +4,6 @@ import { useRouter } from 'next/router'
 import { Heading, Text } from 'rebass/styled-components'
 import Layout from '../../components/Layout'
 import { HomeLink } from '../manage/[webhook]'
-import { event } from '../../lib/ga'
 
 const Index = () => {
   const [success, setSuccess] = useState(false)
@@ -27,7 +26,6 @@ const Index = () => {
         )
 
         if (res.ok) {
-          event({ action: 'delete' })
           setSuccess(true)
           setError(null)
         } else {

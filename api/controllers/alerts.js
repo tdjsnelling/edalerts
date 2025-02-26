@@ -19,67 +19,65 @@ module.exports = {
       req.body.webhook &&
       (req.body.webhook.startsWith('https://discordapp.com/api/webhooks/') ||
         req.body.webhook.startsWith('https://discord.com/api/webhooks/')) &&
-      req.body.freq &&
-      req.body.token
+      req.body.freq
+      // && req.body.token
     ) {
       try {
-        let recaptcha = await request({
-          uri: 'https://www.google.com/recaptcha/api/siteverify',
-          method: 'post',
-          form: {
-            secret: '6LcaQLcZAAAAAHTHBY5SWiUJbl2eRgb50Sqnoz17',
-            response: req.body.token,
-          },
+        // let recaptcha = await request({
+        //   uri: 'https://www.google.com/recaptcha/api/siteverify',
+        //   method: 'post',
+        //   form: {
+        //     secret: 'RECAPTCHA_SECRET',
+        //     response: req.body.token,
+        //   },
+        // })
+        // recaptcha = JSON.parse(recaptcha)
+
+        // if (recaptcha.success && recaptcha.score > 0.5) {
+        const newAlert = new Alert({
+          ...req.body,
+          lastSent: 0,
+          created: Date.now(),
         })
-        recaptcha = JSON.parse(recaptcha)
+        await newAlert.save()
 
-        if (recaptcha.success && recaptcha.score > 0.5) {
-          const newAlert = new Alert({
-            ...req.body,
-            lastSent: 0,
-            created: Date.now(),
-          })
-          await newAlert.save()
+        const [commodity] = commodities
+          .concat(rareCommodities)
+          .filter(
+            (com) =>
+              com.symbol.toLowerCase() === req.body.commodity.toLowerCase()
+          )
 
-          const [commodity] = commodities
-            .concat(rareCommodities)
-            .filter(
-              (com) =>
-                com.symbol.toLowerCase() === req.body.commodity.toLowerCase()
-            )
-
-          const freq = parseInt(req.body.freq)
-          const message = `Alert created successfully: ${
-            commodity ? commodity.name : req.body.commodity
-          } ${req.body.type} ${req.body.trigger === 'above' ? '>' : '<'} ${
-            req.body.value
-          }. Minimum ${req.body.type === 'sell' ? 'demand' : 'supply'} ${
-            req.body.type === 'sell' ? req.body.minDemand : req.body.minSupply
-          }. ${
-            req.body.pad === 'l'
-              ? 'Large landing pad only'
-              : 'Any landing pad size'
-          }. Will send alerts ${
-            freq === 0
-              ? 'as they happen'
-              : `at most every ${freq / 1000} seconds`
-          }.
+        const freq = parseInt(req.body.freq)
+        const message = `Alert created successfully: ${
+          commodity ? commodity.name : req.body.commodity
+        } ${req.body.type} ${req.body.trigger === 'above' ? '>' : '<'} ${
+          req.body.value
+        }. Minimum ${req.body.type === 'sell' ? 'demand' : 'supply'} ${
+          req.body.type === 'sell' ? req.body.minDemand : req.body.minSupply
+        }. ${
+          req.body.pad === 'l'
+            ? 'Large landing pad only'
+            : 'Any landing pad size'
+        }. Will send alerts ${
+          freq === 0 ? 'as they happen' : `at most every ${freq / 1000} seconds`
+        }.
 
 Click here to delete: https://edalerts.app/delete/${newAlert._id}`
 
-          await request({
-            uri: req.body.webhook,
-            method: 'post',
-            json: {
-              username: 'ED Alerts',
-              avatar_url: 'https://edalerts.app/favicon.png',
-              content: message,
-            },
-          })
-          res.send(newAlert._id)
-        } else {
-          res.status(401).send('reCAPTCHA failed')
-        }
+        await request({
+          uri: req.body.webhook,
+          method: 'post',
+          json: {
+            username: 'ED Alerts',
+            avatar_url: 'https://edalerts.app/favicon.png',
+            content: message,
+          },
+        })
+        res.send(newAlert._id)
+        // } else {
+        //   res.status(401).send('reCAPTCHA failed')
+        // }
       } catch (err) {
         res.status(500).send(err.message)
       }

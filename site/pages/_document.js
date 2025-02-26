@@ -59,7 +59,7 @@ class MyDocument extends Document {
             async="async"
             type="text/javascript"
           />
-          <script src="https://www.google.com/recaptcha/api.js?render=6LcaQLcZAAAAAKiWMe5dw56olYAlxsC3m3zc-8NO" />
+          {/*<script src="https://www.google.com/recaptcha/api.js?render=RECAPTCHA_KEY" />*/}
         </Head>
         <body>
           <Main />

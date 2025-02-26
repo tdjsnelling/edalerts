@@ -4,13 +4,12 @@ import { Flex, Box, Heading, Text } from 'rebass/styled-components'
 import styled, { keyframes } from 'styled-components'
 import css from '@styled-system/css'
 import { createGlobalStyle } from 'styled-components'
-import { Loader, HelpCircle, ErrorCircle } from '@styled-icons/boxicons-regular'
+import { Loader, HelpCircle } from '@styled-icons/boxicons-regular'
 import Layout from '../components/Layout'
 import Button from '../components/Button'
 import Input from '../components/Input'
 import Select from '../components/Select'
 import Checkbox from '../components/Checkbox'
-import { event } from '../lib/ga'
 
 import commodities from '../commodities.json'
 import rarecommodities from '../rarecommodities.json'
@@ -129,12 +128,12 @@ const Index = () => {
     try {
       const form = new FormData(e.target)
 
-      const token = await grecaptcha.execute(
-        '6LcaQLcZAAAAAKiWMe5dw56olYAlxsC3m3zc-8NO',
-        {
-          action: 'submit',
-        }
-      )
+      // const token = await grecaptcha.execute(
+      //   'RECAPTCHA_KEY',
+      //   {
+      //     action: 'submit',
+      //   }
+      // )
 
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_BASE}/alert`, {
         method: 'post',
@@ -154,12 +153,11 @@ const Index = () => {
           webhook: form.get('webhook'),
           discordUser: form.get('discordUser'),
           freq: form.get('freq'),
-          token: token,
+          // token: token,
         }),
       })
 
       if (res.ok) {
-        event({ action: 'create' })
         setSuccess(true)
         setError(null)
         setLoading(false)

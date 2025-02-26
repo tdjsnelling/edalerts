@@ -1,8 +1,6 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Head from 'next/head'
-import { useRouter } from 'next/router'
 import { ThemeProvider, createGlobalStyle } from 'styled-components'
-import * as ga from '../lib/ga'
 
 const theme = {
   breakpoints: ['768px'],
@@ -48,34 +46,7 @@ const GlobalStyle = createGlobalStyle(
 `
 )
 
-export const reportWebVitals = ({ id, name, label, value }) => {
-  ga.event({
-    action: name,
-    params: {
-      event_category:
-        label === 'web-vital' ? 'Web Vitals' : 'Next.js custom metric',
-      value: Math.round(name === 'CLS' ? value * 1000 : value), // values must be integers
-      event_label: id, // id unique to current page load
-      non_interaction: true, // avoids affecting bounce rate.
-    },
-  })
-}
-
 const EDAlerts = ({ Component, pageProps }) => {
-  const router = useRouter()
-
-  useEffect(() => {
-    const handleRouteChange = (url) => {
-      ga.pageview(url)
-    }
-
-    router.events.on('routeChangeComplete', handleRouteChange)
-
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange)
-    }
-  }, [router.events])
-
   return (
     <>
       <Head>
