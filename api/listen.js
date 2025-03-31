@@ -75,7 +75,7 @@ const sendAlert = async ({
         method: 'post',
         json: {
           username: 'ED Alerts',
-          avatar_url: 'https://edalerts.app/favicon.png',
+          avatar_url: `${process.env.SITE_URL}/favicon.png`,
           content: discordUser ? `<@${discordUser}>` : undefined,
           embeds: [
             {
@@ -84,7 +84,7 @@ const sendAlert = async ({
               timestamp: new Date().toISOString(),
               author: {
                 name: 'ED Alerts',
-                url: 'https://edalerts.app',
+                url: process.env.SITE_URL,
               },
               fields: [
                 {
@@ -126,7 +126,7 @@ const sendAlert = async ({
                 },
                 {
                   name: 'Delete this alert',
-                  value: `https://edalerts.app/delete/${alertId}`,
+                  value: `${process.env.SITE_URL}/delete/${alertId}`,
                   inline: false,
                 },
               ],

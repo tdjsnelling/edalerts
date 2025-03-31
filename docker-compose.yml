@@ -1,0 +1,36 @@
+services:
+  mongodb:
+    image: "mongo:latest"
+    volumes:
+      - type: bind
+        source: ./data
+        target: /data/db
+  api:
+    build:
+      context: api
+      dockerfile: api.Dockerfile
+    ports:
+      - "3001:3001"
+    environment:
+      MONGO_URL: mongodb://mongodb
+      SITE_URL: http://127.0.0.1
+    depends_on:
+      - mongodb
+  listener:
+    build:
+      context: api
+      dockerfile: listener.Dockerfile
+    environment:
+      MONGO_URL: mongodb://mongodb
+      SITE_URL: http://127.0.0.1
+    depends_on:
+      - mongodb
+  web:
+    build:
+      context: site
+      args:
+        NEXT_PUBLIC_API_BASE: http://127.0.0.1:3001
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api

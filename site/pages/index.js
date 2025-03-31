@@ -206,22 +206,12 @@ const Index = () => {
               sx={{ borderRadius: '50%' }}
             />
             <Text color="grey">
-              <Text
-                as="a"
-                href="https://edalerts.betteruptime.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                color="grey"
-              >
-                market listener {apiData.backendStatus ? '' : 'not'} ok
-              </Text>{' '}
-              {apiData.count && <>&bull; monitoring {apiData.count} alerts </>}
-              {apiData.triggerCount && (
-                <>
-                  &bull; delivered over {apiData.triggerCount.toLocaleString()}{' '}
-                  notifications!
-                </>
-              )}
+              market listener {apiData.backendStatus ? '' : 'not'} ok{' '}
+              <>&bull; monitoring {apiData?.count || 0} alerts </>
+              <>
+                &bull; delivered over{' '}
+                {apiData?.triggerCount?.toLocaleString() || 0} notifications!
+              </>
             </Text>
             {Object.keys(apiData).length < 3 && (
               <Flex alignItems="center" ml={1}>
@@ -505,22 +495,7 @@ const Index = () => {
         {/*    <Text>Waiting for alerts...</Text>*/}
         {/*  )}*/}
         {/*</Box>*/}
-        <Text
-          as="a"
-          href="mailto:contact@edalerts.app"
-          color="grey"
-          display="inline-block"
-          mt={3}
-        >
-          contact@edalerts.app
-        </Text>
-        <Text color="grey" fontSize={0} mt={2}>
-          if you make good use of ED Alerts, please consider donating! it
-          doesn’t cost a huge amount to run but it does come out of my own
-          pocket. any amount is greatly appreciated, get in touch via email for
-          details.
-        </Text>
-        <Box mt={1}>
+        <Box mt={3}>
           <Text color="grey" fontSize={0}>
             &copy; {new Date().getFullYear()}{' '}
             <Text

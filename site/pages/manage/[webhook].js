@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link'
 import styled from 'styled-components'
 import css from '@styled-system/css'
@@ -12,6 +12,7 @@ import commodities from '../../commodities.json'
 import rarecommodities from '../../rarecommodities.json'
 
 import { intervalOptions } from '../index'
+import { useRouter } from 'next/router'
 
 export const HomeLink = styled.a(() =>
   css({
@@ -38,8 +39,25 @@ const getCommodityName = (symbol) => {
   return commodity.name
 }
 
-const Manage = ({ alerts }) => {
+const Manage = () => {
   const [deleted, setDeleted] = useState([])
+  const [alerts, setAlerts] = useState([])
+
+  const {
+    query: { webhook },
+  } = useRouter()
+
+  useEffect(() => {
+    ;(async () => {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_API_BASE}/alert/webhook/${encodeURIComponent(
+          webhook
+        )}`
+      )
+      setAlerts(await res.json())
+    })()
+  }, [])
+
   const filteredAlerts = alerts.filter((alert) => !deleted.includes(alert._id))
 
   return (
@@ -108,23 +126,6 @@ const Manage = ({ alerts }) => {
       )}
     </Layout>
   )
-}
-
-export async function getServerSideProps(context) {
-  const {
-    params: { webhook },
-  } = context
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_BASE}/alert/webhook/${encodeURIComponent(
-      webhook
-    )}`
-  )
-  const alerts = await res.json()
-
-  return {
-    props: { alerts },
-  }
 }
 
 export default Manage

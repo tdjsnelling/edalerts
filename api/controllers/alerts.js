@@ -63,14 +63,14 @@ module.exports = {
           freq === 0 ? 'as they happen' : `at most every ${freq / 1000} seconds`
         }.
 
-Click here to delete: https://edalerts.app/delete/${newAlert._id}`
+Click here to delete: ${process.env.SITE_URL}/delete/${newAlert._id}`
 
         await request({
           uri: req.body.webhook,
           method: 'post',
           json: {
             username: 'ED Alerts',
-            avatar_url: 'https://edalerts.app/favicon.png',
+            avatar_url: `${process.env.SITE_URL}/favicon.png`,
             content: message,
           },
         })

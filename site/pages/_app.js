@@ -68,7 +68,6 @@ const EDAlerts = ({ Component, pageProps }) => {
           content="ED Alerts — Elite Dangerous commodity market alerts"
         />
         <meta property="og:type" content="website" />
-        <meta property="og:url" content="https://edalerts.app" />
         <link rel="icon" href="favicon.png" type="image/png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
       </Head>

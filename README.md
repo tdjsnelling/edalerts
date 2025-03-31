@@ -6,6 +6,14 @@ Create Elite Dangerous commodity market alerts. Get notified when a specific com
 
 ## Deployment
 
+The simplest way to deploy the app is via Docker compose. In the supplied `docker-compose.yml`, update the `SITE_URL` variables to match the hostname of your site, and the `NEXT_PUBLIC_API_BASE` variable to match the hostname of your API. Then simply run the command:
+
+```
+docker compose up
+```
+
+### Details
+
 There are 4 components:
 
 1. **Web front-end** – the interface used to create/delete alerts
@@ -17,7 +25,7 @@ There are 4 components:
 
 Can be started from the `site` directory with `yarn build` & `yarn start`
 
-Requires the `NEXT_PUBLIC_API_BASE` environment variable containing the URL on which the API service is reachable, e.g. `http://localhost:3000`.
+Requires the `NEXT_PUBLIC_API_BASE` environment variable containing the URL on which the API service is reachable, e.g. `http://localhost:3001`.
 
 ### API & market listener
 
